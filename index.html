@@ -21,6 +21,9 @@
             <div class="level-display">
                 <span>Level: <span id="level">1</span></span>
             </div>
+            <div class="pause-display">
+                <button id="pauseBtn" class="pause-btn">Pause</button>
+            </div>
         </header>
 
         <!-- Game Canvas -->
@@ -36,6 +39,18 @@
                 <div class="game-modes">
                     <button id="timedBtn" class="mode-btn"><span class="btn-icon">⏱️</span> Timed</button>
                     <button id="infiniteBtn" class="mode-btn"><span class="btn-icon">♾️</span> Infinite</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pauseMenu" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h1>Game Paused</h1>
+                <div class="pause-options">
+                    <button id="resumeBtn" class="menu-btn">Resume Game</button>
+                    <button id="newGameBtn" class="menu-btn">New Game</button>
+                    <button id="mainMenuBtn" class="menu-btn">Go back to main page</button>
                 </div>
             </div>
         </div>
