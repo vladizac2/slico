@@ -34,11 +34,8 @@ class GameState {
     private gameStartTime: number;
 
     // Game objects
-    private shapes: SliceableShape[];
     private sliceLines: SliceLine[];
     private currentSlice: SliceLine | null;
-    private lastShapeTime: number;
-    private shapeIdCounter: number;
 
     // Mouse/Touch controls
     private isDrawing: boolean;
@@ -59,11 +56,8 @@ class GameState {
         this.gameStartTime = 0;
 
         // Initialize game objects
-        this.shapes = [];
         this.sliceLines = [];
         this.currentSlice = null;
-        this.lastShapeTime = 0;
-        this.shapeIdCounter = 0;
 
         // Initialize controls
         this.isDrawing = false;
@@ -176,78 +170,78 @@ class GameState {
     private checkSliceIntersections(): void {
         if (!this.currentSlice) return;
 
-        for (let i = this.shapes.length - 1; i >= 0; i--) {
-            const shape = this.shapes[i];
-            if (shape.sliced) continue;
+        // for (let i = this.shapes.length - 1; i >= 0; i--) {
+        //     const shape = this.shapes[i];
+        //     if (shape.sliced) continue;
 
-            if (this.lineIntersectsShape(this.currentSlice, shape)) {
-                this.sliceShape(shape, this.currentSlice);
-                this.score += 10;
-                this.updateUI();
-            }
-        }
+        //     if (this.lineIntersectsShape(this.currentSlice, shape)) {
+        //         this.sliceShape(shape, this.currentSlice);
+        //         this.score += 10;
+        //         this.updateUI();
+        //     }
+        // }
     }
 
-    private lineIntersectsShape(line: SliceLine, shape: SliceableShape): boolean {
-        // Simple bounding box intersection check
-        const minX = Math.min(line.x1, line.x2);
-        const maxX = Math.max(line.x1, line.x2);
-        const minY = Math.min(line.y1, line.y2);
-        const maxY = Math.max(line.y1, line.y2);
+    // private lineIntersectsShape(line: SliceLine, shape: SliceableShape): boolean {
+    //     // Simple bounding box intersection check
+    //     const minX = Math.min(line.x1, line.x2);
+    //     const maxX = Math.max(line.x1, line.x2);
+    //     const minY = Math.min(line.y1, line.y2);
+    //     const maxY = Math.max(line.y1, line.y2);
 
-        return !(maxX < shape.x || minX > shape.x + shape.width ||
-            maxY < shape.y || minY > shape.y + shape.height);
-    }
+    //     return !(maxX < shape.x || minX > shape.x + shape.width ||
+    //         maxY < shape.y || minY > shape.y + shape.height);
+    // }
 
-    private sliceShape(shape: SliceableShape, sliceLine: SliceLine): void {
-        shape.sliced = true;
-        shape.sliceLines.push({
-            x1: sliceLine.x1,
-            y1: sliceLine.y1,
-            x2: sliceLine.x2,
-            y2: sliceLine.y2
-        });
-    }
+    // private sliceShape(shape: SliceableShape, sliceLine: SliceLine): void {
+    //     shape.sliced = true;
+    //     shape.sliceLines.push({
+    //         x1: sliceLine.x1,
+    //         y1: sliceLine.y1,
+    //         x2: sliceLine.x2,
+    //         y2: sliceLine.y2
+    //     });
+    // }
 
-    private generateRandomShape(): SliceableShape {
-        const size = 40 + Math.random() * 40; // 40-80px
-        const x = Math.random() * (this.canvas.width - size);
-        const y = Math.random() * (this.canvas.height - size - 100) + 50; // Avoid header area
+    // private generateRandomShape(): SliceableShape {
+    //     const size = 40 + Math.random() * 40; // 40-80px
+    //     const x = Math.random() * (this.canvas.width - size);
+    //     const y = Math.random() * (this.canvas.height - size - 100) + 50; // Avoid header area
 
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
+    //     const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+    //     const color = colors[Math.floor(Math.random() * colors.length)];
 
-        // Generate random polygon points
-        const points = this.generatePolygonPoints(size, 3 + Math.floor(Math.random() * 5)); // 3-7 sides
+    //     // Generate random polygon points
+    //     const points = this.generatePolygonPoints(size, 3 + Math.floor(Math.random() * 5)); // 3-7 sides
 
-        return {
-            id: this.shapeIdCounter++,
-            x: x,
-            y: y,
-            width: size,
-            height: size,
-            color: color,
-            points: points,
-            sliced: false,
-            sliceLines: []
-        };
-    }
+    //     return {
+    //         id: this.shapeIdCounter++,
+    //         x: x,
+    //         y: y,
+    //         width: size,
+    //         height: size,
+    //         color: color,
+    //         points: points,
+    //         sliced: false,
+    //         sliceLines: []
+    //     };
+    // }
 
-    private generatePolygonPoints(size: number, sides: number): { x: number; y: number }[] {
-        const points: { x: number; y: number }[] = [];
-        const centerX = size / 2;
-        const centerY = size / 2;
-        const radius = size / 2;
+    // private generatePolygonPoints(size: number, sides: number): { x: number; y: number }[] {
+    //     const points: { x: number; y: number }[] = [];
+    //     const centerX = size / 2;
+    //     const centerY = size / 2;
+    //     const radius = size / 2;
 
-        for (let i = 0; i < sides; i++) {
-            const angle = (i * 2 * Math.PI) / sides;
-            const x = centerX + radius * Math.cos(angle);
-            const y = centerY + radius * Math.sin(angle);
-            points.push({ x, y });
-        }
+    //     for (let i = 0; i < sides; i++) {
+    //         const angle = (i * 2 * Math.PI) / sides;
+    //         const x = centerX + radius * Math.cos(angle);
+    //         const y = centerY + radius * Math.sin(angle);
+    //         points.push({ x, y });
+    //     }
 
-        return points;
-    }
+    //     return points;
+    // }
 
     private startGame(mode: 'timed' | 'infinite'): void {
         this.gameRunning = true;
@@ -255,10 +249,7 @@ class GameState {
         this.gameMode = mode;
         this.score = 0;
         this.level = 1;
-        this.shapes = [];
         this.sliceLines = [];
-        this.shapeIdCounter = 0;
-        this.lastShapeTime = 0;
         this.gameSpeed = 16; // 60 FPS
 
         if (mode === 'timed') {
@@ -317,7 +308,6 @@ class GameState {
         }
 
         // Clear existing shapes immediately to prevent visual hiccup
-        this.shapes = [];
         this.sliceLines = [];
         this.currentSlice = null;
         this.isDrawing = false;
@@ -393,52 +383,56 @@ class GameState {
     }
 
     private spawnShapes(): void {
-        const now = Date.now();
-        if (now - this.lastShapeTime > 2000) { // Spawn every 2 seconds
-            this.shapes.push(this.generateRandomShape());
-            this.lastShapeTime = now;
-        }
+        // const now = Date.now();
+        // if (now - this.lastShapeTime > 2000) { // Spawn every 2 seconds
+        //     this.shapes.push(this.generateRandomShape());
+        //     this.lastShapeTime = now;
+        // }
     }
 
     private updateShapes(): void {
         // Remove shapes that have been sliced for too long
-        for (let i = this.shapes.length - 1; i >= 0; i--) {
-            const shape = this.shapes[i];
-            if (shape.sliced && shape.sliceLines.length > 0) {
-                // Remove after 3 seconds
-                if (Date.now() - this.lastShapeTime > 3000) {
-                    this.shapes.splice(i, 1);
-                }
-            }
-        }
+        // for (let i = this.shapes.length - 1; i >= 0; i--) {
+        //     const shape = this.shapes[i];
+        //     if (shape.sliced && shape.sliceLines.length > 0) {
+        //         // Remove after 3 seconds
+        //         if (Date.now() - this.lastShapeTime > 3000) {
+        //             this.shapes.splice(i, 1);
+        //         }
+        //     }
+        // }
     }
 
     private drawShapes(): void {
-        this.shapes.forEach(shape => {
-            this.ctx.save();
-            this.ctx.translate(shape.x, shape.y);
+        // this.shapes.forEach(shape => {
+        //     this.ctx.save();
+        //     this.ctx.translate(shape.x, shape.y);
 
-            if (shape.sliced) {
-                this.ctx.globalAlpha = 0.5;
-            }
+        //     // Ensure sharp edges
+        //     this.ctx.lineJoin = 'miter';
+        //     this.ctx.lineCap = 'square';
 
-            this.ctx.fillStyle = shape.color;
-            this.ctx.beginPath();
+        //     if (shape.sliced) {
+        //         this.ctx.globalAlpha = 0.5;
+        //     }
 
-            if (shape.points.length > 0) {
-                this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-                for (let i = 1; i < shape.points.length; i++) {
-                    this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
-                }
-                this.ctx.closePath();
-            } else {
-                // Fallback to rectangle if no points
-                this.ctx.fillRect(0, 0, shape.width, shape.height);
-            }
+        //     this.ctx.fillStyle = shape.color;
+        //     this.ctx.beginPath();
 
-            this.ctx.fill();
-            this.ctx.restore();
-        });
+        //     if (shape.points.length > 0) {
+        //         this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+        //         for (let i = 1; i < shape.points.length; i++) {
+        //             this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
+        //         }
+        //         this.ctx.closePath();
+        //     } else {
+        //         // Fallback to rectangle if no points
+        //         this.ctx.fillRect(0, 0, shape.width, shape.height);
+        //     }
+
+        //     this.ctx.fill();
+        //     this.ctx.restore();
+        // });
     }
 
     private drawSliceLines(): void {
@@ -505,8 +499,12 @@ class GameState {
         const container = document.getElementById('gameCanvas') as HTMLElement;
         const containerRect = container.getBoundingClientRect();
 
-        this.canvas.width = Math.min(400, containerRect.width - 20);
-        this.canvas.height = Math.min(600, window.innerHeight - 200);
+        // Set canvas to fill the entire container
+        this.canvas.width = containerRect.width;
+        this.canvas.height = containerRect.height;
+
+        // Redraw the canvas content
+        this.clearCanvas();
     }
 }
 
