@@ -310,6 +310,21 @@ class GameState {
         const pauseMenu = document.getElementById('pauseMenu') as HTMLElement;
         pauseMenu.style.display = 'none';
 
+        // Stop current game loop to prevent drawing old content
+        if (this.gameLoop) {
+            clearInterval(this.gameLoop);
+            this.gameLoop = null;
+        }
+
+        // Clear existing shapes immediately to prevent visual hiccup
+        this.shapes = [];
+        this.sliceLines = [];
+        this.currentSlice = null;
+        this.isDrawing = false;
+
+        // Clear the canvas immediately
+        this.clearCanvas();
+
         // Start a new game with the same mode
         this.startGame(this.gameMode);
     }
