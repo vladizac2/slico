@@ -78,8 +78,9 @@ body {
 
 .control-row {
     display: flex;
-    gap: 20px;
+    gap: 40px;
     align-items: center;
+    justify-content: center;
 }
 
 .control-btn {
@@ -293,7 +294,7 @@ body {
     }
 
     .control-row {
-        gap: 15px;
+        gap: 30px;
     }
 
     .menu-content {
@@ -363,7 +364,7 @@ body {
     }
 
     .control-row {
-        gap: 10px;
+        gap: 20px;
     }
 
     .menu-content {
