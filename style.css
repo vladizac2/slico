@@ -52,6 +52,8 @@ body {
     align-items: center;
     padding: 10px;
     background: rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
 }
 
 #gameBoard {
@@ -91,7 +93,6 @@ body {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
@@ -123,51 +124,87 @@ body {
     backdrop-filter: blur(5px);
 }
 
+/* Start menu stays visible */
+#gameMenu {
+    z-index: 1001;
+}
+
 .menu-content {
-    background: linear-gradient(145deg, #3498db, #2980b9);
-    padding: 30px;
-    border-radius: 20px;
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    padding: 40px;
+    border-radius: 25px;
     text-align: center;
     color: white;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     max-width: 90%;
-    width: 350px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+    width: 380px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 .menu-content h1 {
-    font-size: 2.2em;
-    margin-bottom: 25px;
-    background: linear-gradient(45deg, #ffffff, #f39c12);
+    font-size: 3.5em;
+    margin-bottom: 30px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    position: relative;
+}
+
+.menu-content h1::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(1px);
+    z-index: -1;
 }
 
 .game-modes {
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
-    flex-wrap: wrap;
+    flex-direction: row;
     justify-content: center;
 }
 
 .mode-btn {
     flex: 1;
-    min-width: 150px;
-    padding: 20px 25px;
+    min-width: 180px;
+    padding: 20px 25px 20px 15px;
     border: none;
     border-radius: 25px;
     background: linear-gradient(145deg, #e74c3c, #c0392b);
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.btn-icon {
+    font-size: 3em;
+    margin-right: 15px;
+    margin-left: 0;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
 .mode-btn:hover {
@@ -191,7 +228,6 @@ body {
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -204,26 +240,6 @@ body {
     transform: translateY(0);
 }
 
-/* Smooth transitions for all interactive elements */
-.menu-overlay {
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.menu-content {
-    animation: slideIn 0.4s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -271,8 +287,9 @@ body {
     }
 
     .menu-content h1 {
-        font-size: 2em;
+        font-size: 2.5em;
         margin-bottom: 20px;
+        letter-spacing: -1px;
     }
 
     .game-modes {
@@ -281,9 +298,15 @@ body {
     }
 
     .mode-btn {
-        min-width: 120px;
-        padding: 15px 20px;
+        min-width: 160px;
+        padding: 18px 20px 18px 12px;
         font-size: 14px;
+    }
+
+    .btn-icon {
+        font-size: 2.5em;
+        margin-right: 12px;
+        margin-left: 0;
     }
 
     .menu-btn {
@@ -328,20 +351,27 @@ body {
     }
 
     .menu-content h1 {
-        font-size: 1.8em;
+        font-size: 2.2em;
         margin-bottom: 15px;
+        letter-spacing: -0.5px;
     }
 
     .game-modes {
-        flex-direction: column;
+        flex-direction: row;
         gap: 8px;
         margin-bottom: 15px;
     }
 
     .mode-btn {
-        min-width: 100px;
-        padding: 12px 15px;
-        font-size: 13px;
+        min-width: 140px;
+        padding: 15px 18px 15px 10px;
+        font-size: 12px;
+    }
+
+    .btn-icon {
+        font-size: 2em;
+        margin-right: 10px;
+        margin-left: 0;
     }
 
     .menu-btn {
@@ -375,38 +405,6 @@ body {
     }
 }
 
-/* Animation Classes */
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
-.fade-out {
-    animation: fadeOut 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    to {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-}
 
 /* Game-specific animations */
 .score-pop {
