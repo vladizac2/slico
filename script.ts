@@ -240,14 +240,8 @@ class GameState {
         this.gameStartTime = Date.now();
         this.gameTime = 0;
 
-        // Smooth transition to game
-        const gameMenu = document.getElementById('gameMenu')!;
-        gameMenu.style.opacity = '0';
-        setTimeout(() => {
-            gameMenu.style.display = 'none';
-            gameMenu.style.opacity = '1';
-        }, 300);
-
+        // Hide the start menu and game over screen
+        document.getElementById('gameMenu')!.style.display = 'none';
         document.getElementById('gameOverScreen')!.style.display = 'none';
 
         this.updateUI();
@@ -260,22 +254,9 @@ class GameState {
         this.gamePaused = false;
         clearInterval(this.gameLoop!);
 
-        // Smooth transition to main menu
-        const gameMenu = document.getElementById('gameMenu')!;
-        const gameOverScreen = document.getElementById('gameOverScreen')!;
-
-        gameOverScreen.style.opacity = '0';
-        setTimeout(() => {
-            gameOverScreen.style.display = 'none';
-            gameOverScreen.style.opacity = '1';
-
-            gameMenu.style.display = 'flex';
-            gameMenu.style.opacity = '0';
-            gameMenu.querySelector('.menu-content h1')!.textContent = 'Mobile Game';
-            setTimeout(() => {
-                gameMenu.style.opacity = '1';
-            }, 10);
-        }, 300);
+        // Show the start menu again, hide game over screen
+        document.getElementById('gameMenu')!.style.display = 'flex';
+        document.getElementById('gameOverScreen')!.style.display = 'none';
 
         this.clearCanvas();
     }
@@ -301,13 +282,8 @@ class GameState {
             document.getElementById('finalLevelLabel')!.style.display = 'block';
         }
 
-        // Smooth transition to game over screen
-        const gameOverScreen = document.getElementById('gameOverScreen')!;
-        gameOverScreen.style.display = 'flex';
-        gameOverScreen.style.opacity = '0';
-        setTimeout(() => {
-            gameOverScreen.style.opacity = '1';
-        }, 10);
+        // Show game over screen
+        document.getElementById('gameOverScreen')!.style.display = 'flex';
     }
 
     private update(): void {
@@ -467,9 +443,6 @@ class GameState {
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new GameState();
-
-    // Add some initial visual effects
-    document.getElementById('gameMenu')!.classList.add('fade-in');
 
     // Prevent context menu on long press
     document.addEventListener('contextmenu', (e: Event) => {
