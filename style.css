@@ -164,7 +164,8 @@ body {
 .game-modes {
     display: flex;
     gap: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    margin-top: 35px;
     flex-direction: row;
     justify-content: center;
 }
@@ -314,7 +315,8 @@ body {
 
     .game-modes {
         gap: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 0px;
+        margin-top: 25px;
     }
 
     .mode-btn {
@@ -384,7 +386,8 @@ body {
     .game-modes {
         flex-direction: row;
         gap: 8px;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
+        margin-top: 20px;
     }
 
     .mode-btn {
