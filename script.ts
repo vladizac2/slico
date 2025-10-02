@@ -82,9 +82,6 @@ class GameState {
         // Button controls
         document.getElementById('timedBtn')!.addEventListener('click', () => this.startGame('timed'));
         document.getElementById('infiniteBtn')!.addEventListener('click', () => this.startGame('infinite'));
-        document.getElementById('pauseBtn')!.addEventListener('click', () => this.pauseGame());
-        document.getElementById('resumeBtn')!.addEventListener('click', () => this.resumeGame());
-        document.getElementById('restartBtn')!.addEventListener('click', () => this.restartGame());
         document.getElementById('playAgainBtn')!.addEventListener('click', () => this.restartGame());
 
         // Arrow controls
@@ -158,11 +155,7 @@ class GameState {
                 break;
             case 'Escape':
                 e.preventDefault();
-                if (this.gamePaused) {
-                    this.resumeGame();
-                } else {
-                    this.pauseGame();
-                }
+                this.restartGame();
                 break;
         }
     }
@@ -247,53 +240,42 @@ class GameState {
         this.gameStartTime = Date.now();
         this.gameTime = 0;
 
-        document.getElementById('gameMenu')!.style.display = 'none';
+        // Smooth transition to game
+        const gameMenu = document.getElementById('gameMenu')!;
+        gameMenu.style.opacity = '0';
+        setTimeout(() => {
+            gameMenu.style.display = 'none';
+            gameMenu.style.opacity = '1';
+        }, 300);
+
         document.getElementById('gameOverScreen')!.style.display = 'none';
-        document.getElementById('pauseBtn')!.style.display = 'inline-block';
-        document.getElementById('resumeBtn')!.style.display = 'none';
-        document.getElementById('restartBtn')!.style.display = 'inline-block';
 
         this.updateUI();
         this.gameLoop = setInterval(() => this.update(), 16); // ~60 FPS
     }
 
-    private pauseGame(): void {
-        if (!this.gameRunning) return;
-
-        this.gamePaused = true;
-        clearInterval(this.gameLoop!);
-
-        document.getElementById('pauseBtn')!.style.display = 'none';
-        document.getElementById('resumeBtn')!.style.display = 'inline-block';
-
-        const gameMenu = document.getElementById('gameMenu')!;
-        gameMenu.style.display = 'flex';
-        gameMenu.querySelector('.menu-content h1')!.textContent = 'Game Paused';
-    }
-
-    private resumeGame(): void {
-        if (!this.gameRunning) return;
-
-        this.gamePaused = false;
-        document.getElementById('gameMenu')!.style.display = 'none';
-        document.getElementById('pauseBtn')!.style.display = 'inline-block';
-        document.getElementById('resumeBtn')!.style.display = 'none';
-
-        this.gameLoop = setInterval(() => this.update(), 16);
-    }
 
     private restartGame(): void {
         this.gameRunning = false;
         this.gamePaused = false;
         clearInterval(this.gameLoop!);
 
+        // Smooth transition to main menu
         const gameMenu = document.getElementById('gameMenu')!;
-        gameMenu.style.display = 'flex';
-        gameMenu.querySelector('.menu-content h1')!.textContent = 'Mobile Game';
-        document.getElementById('gameOverScreen')!.style.display = 'none';
-        document.getElementById('pauseBtn')!.style.display = 'none';
-        document.getElementById('resumeBtn')!.style.display = 'none';
-        document.getElementById('restartBtn')!.style.display = 'none';
+        const gameOverScreen = document.getElementById('gameOverScreen')!;
+
+        gameOverScreen.style.opacity = '0';
+        setTimeout(() => {
+            gameOverScreen.style.display = 'none';
+            gameOverScreen.style.opacity = '1';
+
+            gameMenu.style.display = 'flex';
+            gameMenu.style.opacity = '0';
+            gameMenu.querySelector('.menu-content h1')!.textContent = 'Mobile Game';
+            setTimeout(() => {
+                gameMenu.style.opacity = '1';
+            }, 10);
+        }, 300);
 
         this.clearCanvas();
     }
@@ -319,10 +301,13 @@ class GameState {
             document.getElementById('finalLevelLabel')!.style.display = 'block';
         }
 
-        document.getElementById('gameOverScreen')!.style.display = 'flex';
-        document.getElementById('pauseBtn')!.style.display = 'none';
-        document.getElementById('resumeBtn')!.style.display = 'none';
-        document.getElementById('restartBtn')!.style.display = 'none';
+        // Smooth transition to game over screen
+        const gameOverScreen = document.getElementById('gameOverScreen')!;
+        gameOverScreen.style.display = 'flex';
+        gameOverScreen.style.opacity = '0';
+        setTimeout(() => {
+            gameOverScreen.style.opacity = '1';
+        }, 10);
     }
 
     private update(): void {
