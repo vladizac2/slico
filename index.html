@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mobile Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="gameContainer">
+        <!-- Game Header -->
+        <header id="gameHeader">
+            <div class="score-display">
+                <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="level-display">
+                <span>Level: <span id="level">1</span></span>
+            </div>
+        </header>
+
+        <!-- Game Canvas -->
+        <div id="gameCanvas">
+            <canvas id="gameBoard" width="400" height="600"></canvas>
+        </div>
+
+        <!-- Game Controls -->
+        <div id="gameControls">
+            <div class="control-row">
+                <button id="leftBtn" class="control-btn">←</button>
+                <button id="actionBtn" class="control-btn action-btn">Action</button>
+                <button id="rightBtn" class="control-btn">→</button>
+            </div>
+        </div>
+
+        <!-- Game Menu -->
+        <div id="gameMenu" class="menu-overlay">
+            <div class="menu-content">
+                <h1>Mobile Game</h1>
+                <div class="game-modes">
+                    <button id="timedBtn" class="mode-btn">⏱️ Timed Mode</button>
+                    <button id="infiniteBtn" class="mode-btn">♾️ Infinite Mode</button>
+                </div>
+                <button id="pauseBtn" class="menu-btn" style="display: none;">Pause</button>
+                <button id="resumeBtn" class="menu-btn" style="display: none;">Resume</button>
+                <button id="restartBtn" class="menu-btn" style="display: none;">Restart</button>
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <p>Use the arrow buttons to move left and right. Tap the action button to perform special moves!</p>
+                    <div class="mode-descriptions">
+                        <p><strong>Timed Mode:</strong> Survive as long as possible!</p>
+                        <p><strong>Infinite Mode:</strong> Endless gameplay!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="menu-overlay" style="display: none;">
+            <div class="menu-content">
+                <h1>Game Over!</h1>
+                <p>Mode: <span id="finalMode">Infinite</span></p>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <p id="finalTimeLabel" style="display: none;">Time Survived: <span id="finalTime">0:00</span></p>
+                <p id="finalLevelLabel">Level Reached: <span id="finalLevel">1</span></p>
+                <button id="playAgainBtn" class="menu-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dist/script.js"></script>
+</body>
+
+</html>
