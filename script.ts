@@ -46,7 +46,7 @@ class GameState {
     constructor() {
         this.canvas = document.getElementById('gameBoard') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
-        this.shape = new Shape();
+        this.shape = new Shape(this.canvas, this.ctx);
         this.score = 0;
         this.level = 1;
         this.gameRunning = false;

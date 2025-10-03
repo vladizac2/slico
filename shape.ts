@@ -37,11 +37,14 @@ class Shape {
     }
 
     private generateRandomShape(): void {
-        // Get canvas dimensions to center the shape
-        const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-        const centerX = canvas ? canvas.width / 2 : 400;
-        const centerY = canvas ? canvas.height / 2 : 300;
-        const baseRadius = 60;
+        if (!this.canvas) {
+            return;
+        }
+
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const spc = this.canvas.height * 0.1;
+        const baseRadius = (this.canvas.height - 2 * spc) / 2;
         const sides = Math.floor(Math.random() * 5) + 3; // 3-7 sides
 
         this.lines = [];
