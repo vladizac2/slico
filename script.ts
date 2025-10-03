@@ -406,7 +406,7 @@ class GameState {
     }
 
     private drawShapes(): void {
-        this.shape.render(this.canvas, this.ctx);
+        this.shape.render();
         // this.shapes.forEach(shape => {
         //     this.ctx.save();
         //     this.ctx.translate(shape.x, shape.y);

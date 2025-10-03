@@ -17,9 +17,8 @@ class Shape {
             this.generateRandomShape();
         }
 
-        // Draw the shape outline
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 2;
+        // Draw the shape with single background color
+        this.ctx.fillStyle = '#FF6B6B';
         this.ctx.beginPath();
 
         if (this.lines.length > 0) {
@@ -29,11 +28,12 @@ class Shape {
             }
             this.ctx.closePath();
         }
-        this.ctx.stroke();
-
-        // Fill the shape
-        this.ctx.fillStyle = '#FF6B6B';
         this.ctx.fill();
+
+        // Draw outline for better visibility
+        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
     }
 
     private generateRandomShape(): void {
@@ -43,8 +43,12 @@ class Shape {
 
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const spc = this.canvas.height * 0.1;
-        const baseRadius = (this.canvas.height - 2 * spc) / 2;
+        const padding = 60; // More padding to ensure shape fits
+        const maxRadius = Math.min(
+            (this.canvas.width - padding) / 2,
+            (this.canvas.height - padding) / 2
+        );
+        const baseRadius = maxRadius * 0.8; // Use 80% of max radius for safety
         const sides = Math.floor(Math.random() * 5) + 3; // 3-7 sides
 
         this.lines = [];
@@ -54,7 +58,7 @@ class Shape {
 
         for (let i = 0; i < sides; i++) {
             const angle = (i * 2 * Math.PI) / sides;
-            const radiusVariation = baseRadius + (Math.random() - 0.5) * 30; // ±15px variation
+            const radiusVariation = baseRadius + (Math.random() - 0.5) * (baseRadius * 0.3); // ±30% variation
             const angleVariation = (Math.random() - 0.5) * 0.4; // ±0.2 rad variation
 
             const x = centerX + radiusVariation * Math.cos(angle + angleVariation);
