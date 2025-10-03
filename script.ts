@@ -23,6 +23,7 @@ interface SliceLine {
 class GameState {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+    private shape: Shape;
     private score: number;
     private level: number;
     private gameRunning: boolean;
@@ -45,6 +46,7 @@ class GameState {
     constructor() {
         this.canvas = document.getElementById('gameBoard') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+        this.shape = new Shape();
         this.score = 0;
         this.level = 1;
         this.gameRunning = false;
@@ -404,6 +406,7 @@ class GameState {
     }
 
     private drawShapes(): void {
+        this.shape.render(this.canvas, this.ctx);
         // this.shapes.forEach(shape => {
         //     this.ctx.save();
         //     this.ctx.translate(shape.x, shape.y);
