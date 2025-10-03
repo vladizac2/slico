@@ -22,9 +22,9 @@ class Shape {
         this.ctx.beginPath();
 
         if (this.lines.length > 0) {
-            this.ctx.moveTo(this.lines[0].p1.x, this.lines[0].p1.y);
+            this.ctx.moveTo(this.lines[0].getP1().x, this.lines[0].getP1().y);
             for (const line of this.lines) {
-                this.ctx.lineTo(line.p2.x, line.p2.y);
+                this.ctx.lineTo(line.getP2().x, line.getP2().y);
             }
             this.ctx.closePath();
         }
@@ -34,6 +34,20 @@ class Shape {
         this.ctx.strokeStyle = '#ffffff';
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
+    }
+
+    public inside(pos: Point): boolean {
+
+        let collideCount = 0;
+
+        for (const line of this.lines) {
+
+            if (line.checkParallelYLineCollides(pos)) {
+                collideCount++;
+            }
+        }
+
+        return collideCount % 2 != 0;
     }
 
     private generateRandomShape(): void {
@@ -72,75 +86,8 @@ class Shape {
             const currentPoint = points[i];
             const nextPoint = points[(i + 1) % points.length];
 
-            this.lines.push({ p1: currentPoint, p2: nextPoint });
+            this.lines.push(new Line(currentPoint, nextPoint));
         }
     }
 
-
-    // // Method to add a slice line to the shape
-    // public addSliceLine(sliceLine: { x1: number; y1: number; x2: number; y2: number }): void {
-    //     this.sliceLines.push(sliceLine);
-    //     this.sliced = true;
-    // }
-
-    // // Method to check if a point is inside the shape
-    // public containsPoint(x: number, y: number): boolean {
-    //     if (this.points.length === 0) {
-    //         // Fallback to bounding box check
-    //         return x >= this.x && x <= this.x + this.width &&
-    //             y >= this.y && y <= this.y + this.height;
-    //     }
-
-    //     // Point-in-polygon algorithm
-    //     let inside = false;
-    //     for (let i = 0, j = this.points.length - 1; i < this.points.length; j = i++) {
-    //         const xi = this.points[i].x + this.x;
-    //         const yi = this.points[i].y + this.y;
-    //         const xj = this.points[j].x + this.x;
-    //         const yj = this.points[j].y + this.y;
-
-    //         if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
-    //             inside = !inside;
-    //         }
-    //     }
-    //     return inside;
-    // }
-
-    // // Method to get the center point of the shape
-    // public getCenter(): { x: number; y: number } {
-    //     if (this.points.length === 0) {
-    //         return {
-    //             x: this.x + this.width / 2,
-    //             y: this.y + this.height / 2
-    //         };
-    //     }
-
-    //     let centerX = 0;
-    //     let centerY = 0;
-    //     for (const point of this.points) {
-    //         centerX += point.x;
-    //         centerY += point.y;
-    //     }
-    //     return {
-    //         x: this.x + centerX / this.points.length,
-    //         y: this.y + centerY / this.points.length
-    //     };
-    // }
-
-    // // Method to move the shape
-    // public move(deltaX: number, deltaY: number): void {
-    //     this.x += deltaX;
-    //     this.y += deltaY;
-    // }
-
-    // // Method to check if shape intersects with a line
-    // public intersectsLine(line: SliceLine): boolean {
-    //     const minX = Math.min(line.x1, line.x2);
-    //     const maxX = Math.max(line.x1, line.x2);
-    //     const minY = Math.min(line.y1, line.y2);
-    //     const maxY = Math.max(line.y1, line.y2);
-
-    //     return !(maxX < this.x || minX > this.x + this.width ||
-    //         maxY < this.y || minY > this.y + this.height);
-    // }
 }
