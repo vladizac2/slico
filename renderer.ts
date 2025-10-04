@@ -12,8 +12,7 @@ function drawCircle(center: Point, fillColor: Color): void {
     renderCtx.beginPath();
     renderCtx.arc(center.x, center.y, r, 0, 2 * Math.PI);
 
-    // Always fill with bright color
-    renderCtx.fillStyle = fillColor || Color.YELLOW; // Default bright yellow
+    renderCtx.fillStyle = fillColor || Color.YELLOW;
     renderCtx.fill();
 
     // Always stroke with contrasting color

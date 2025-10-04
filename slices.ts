@@ -10,14 +10,10 @@ class Slices {
     private lastPos: Point;
     private newSliceTime: number;
 
-    private startSlicePointShown = false;
-    private endSlicePointShown = false;
-    private startSlicePoint: Point;
-    private endSlicePoint: Point;
-    private slicePointsShowTime = 0;
-
+    private curSlicedShape: SlicedShape | null;
+    private slicedShapes: SlicedShape[];
     private readonly NEW_SLICE_TIME = 2;
-    private readonly SLICE_POINT_SHOW_TIME = 50;
+
 
     constructor(ctx: CanvasRenderingContext2D, shape: Shape) {
         this.ctx = ctx;
@@ -27,8 +23,8 @@ class Slices {
         this.lastPos = { x: 0, y: 0 };
         this.startCutLine = null;
         this.newSliceTime = 0;
-        this.startSlicePoint = { x: 0, y: 0 };
-        this.endSlicePoint = { x: 0, y: 0 };
+        this.curSlicedShape = null;
+        this.slicedShapes = [];
     }
 
     private addNewLine(p1: Point, p2: Point) {
@@ -54,6 +50,20 @@ class Slices {
         }
     }
 
+    private addSlicedShape(startSlicePoint: Point) {
+        this.curSlicedShape = new SlicedShape(this.ctx, startSlicePoint);
+        this.slicedShapes.push(this.curSlicedShape);
+    }
+
+    private startSlicedShape(endSlicePoint: Point) {
+        if (this.curSlicedShape == null) {
+            console.error("Cur slice shape is null in end");
+        } else {
+            this.curSlicedShape.start(endSlicePoint);
+            this.curSlicedShape = null;
+        }
+    }
+
     public update(prevMousePos: Point, curMousePos: Point) {
 
         const prevIn = this.shape.inside(prevMousePos);
@@ -72,8 +82,7 @@ class Slices {
             this.startCutLine = cutLine;
             this.lastPos = collisionPoint;
 
-            this.startSlicePointShown = true;
-            this.startSlicePoint = { ... this.lastPos };
+            this.addSlicedShape(this.lastPos);
 
         } else if (prevIn && !curIn) {
 
@@ -88,17 +97,18 @@ class Slices {
 
                 this.started = false;
                 this.addNewLine(this.lastPos, collisionPoint);
-                this.endSlicePointShown = true;
-                this.endSlicePoint = { ...collisionPoint };
+
+                this.startSlicedShape(collisionPoint);
                 this.shape.handleCutShape(this.lines, cutLine, this.startCutLine);
             }
 
-            this.reset();
+            this.initSlice();
+
         } else if (prevIn && curIn && !this.started) {
             this.started = true;
             this.lastPos = curMousePos;
-            this.startSlicePointShown = true;
-            this.startSlicePoint = { ... this.lastPos };
+
+            this.addSlicedShape(this.lastPos);
         } else if (!prevIn && !curIn) {
             return;
         }
@@ -106,11 +116,17 @@ class Slices {
         this.handleSpawningNewLine(curMousePos);
     }
 
-    private reset() {
+    private initSlice() {
         this.lines = [];
         this.started = false;
         this.lastPos = { x: 0, y: 0 };
         this.newSliceTime = 0;
+    }
+
+    public reset() {
+        this.initSlice();
+        this.curSlicedShape = null;
+        this.slicedShapes = [];
     }
 
     public render() {
@@ -119,8 +135,20 @@ class Slices {
             drawLine(this.lines[i], Color.YELLOW, 12);
         }
 
-        if (this.startSlicePointShown) {
+        let removalIndexes = [];
 
+        for (let i = 0; i < this.slicedShapes.length; i++) {
+            const slicedShape = this.slicedShapes[i];
+            const remove = slicedShape.render();
+            if (remove) {
+                removalIndexes.push(i);
+            }
+        }
+
+        for (const removalIndex of removalIndexes) {
+            if (removalIndex > -1) {
+                this.slicedShapes.splice(removalIndex, 1);
+            }
         }
 
     }

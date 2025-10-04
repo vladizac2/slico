@@ -178,6 +178,7 @@ class GameState {
 
         // Clear the canvas immediately
         this.clearCanvas();
+        this.slices.reset();
 
         // Start a new game with the same mode
         this.startGame(this.gameMode);
