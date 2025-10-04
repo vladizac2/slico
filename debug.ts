@@ -3,29 +3,54 @@ enum Color {
     RED = '#ff0000'
 }
 
-function drawCircle(ctx: CanvasRenderingContext2D, center: Point,
-    fillColor: Color, strokeColor?: string): void {
+interface DrawPoint {
+    p: Point;
+    color: Color;
+}
+
+let debugCtx: CanvasRenderingContext2D;
+let debugKeepPoints: DrawPoint[]
+
+function initDebug(ctx: CanvasRenderingContext2D) {
+    debugKeepPoints = [];
+    debugCtx = ctx;
+}
+
+function drawCircle(center: Point,
+    fillColor: Color, keep?: boolean, strokeColor?: string): void {
 
     let r = 15; // Bigger default radius
 
-    ctx.beginPath();
-    ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
+    debugCtx.beginPath();
+    debugCtx.arc(center.x, center.y, r, 0, 2 * Math.PI);
 
     // Always fill with bright color
-    ctx.fillStyle = fillColor || Color.YELLOW; // Default bright yellow
-    ctx.fill();
+    debugCtx.fillStyle = fillColor || Color.YELLOW; // Default bright yellow
+    debugCtx.fill();
 
     // Always stroke with contrasting color
-    ctx.strokeStyle = strokeColor || '#000000'; // Default black border
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    debugCtx.strokeStyle = strokeColor || '#000000'; // Default black border
+    debugCtx.lineWidth = 2;
+    debugCtx.stroke();
+
+    if (keep) {
+        debugKeepPoints.push({ p: center, color: fillColor });
+    }
+
 }
 
-function drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
-    ctx.strokeStyle = '#ffff00';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(line.getP1().x, line.getP1().y);
-    ctx.lineTo(line.getP2().x, line.getP2().y);
-    ctx.stroke();
+function drawLine(line: Line): void {
+    debugCtx.strokeStyle = '#ffff00';
+    debugCtx.lineWidth = 3;
+    debugCtx.beginPath();
+    debugCtx.moveTo(line.getP1().x, line.getP1().y);
+    debugCtx.lineTo(line.getP2().x, line.getP2().y);
+    debugCtx.stroke();
+}
+
+function renderDebugKeeps() {
+
+    for (const dp of debugKeepPoints) {
+        drawCircle(dp.p, dp.color);
+    }
 }

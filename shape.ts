@@ -13,7 +13,8 @@ class Shape {
     public calcCutLine(p1: Point, p2: Point, collisionPoint: Point): (Line | null) {
 
         const curLine: Line = new Line(p1, p2);
-        collisionPoint = { x: 0, y: 0 };
+        collisionPoint.x = 0;
+        collisionPoint.y = 0;
         let tmp: Point = { x: 0, y: 0 };
         let minDist = -1;
         let cutLine: Line | null = null;
@@ -33,7 +34,6 @@ class Shape {
             }
         }
 
-        //console.log(`set: ${collisionPoint.x} ${collisionPoint.y}`);
         return cutLine;
     }
 

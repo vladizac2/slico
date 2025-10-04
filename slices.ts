@@ -45,20 +45,13 @@ class Slices {
 
     public update(prevMousePos: Point, curMousePos: Point) {
 
-        //console.log(`p1: ${prevMousePos.x} ${prevMousePos.y} - p: ${mousePos.x} ${mousePos.y}`)
-
         const prevIn = this.shape.inside(prevMousePos);
         const curIn = this.shape.inside(curMousePos);
 
-        //console.log(`prev: ${prevIn} cur: ${curIn}`);
-        //console.log("");
-
         if (!prevIn && curIn) {
             let collisionPoint = { x: 0, y: 0 };
-            // console.log("");
             const cutLine: Line | null = this.shape.calcCutLine(prevMousePos, curMousePos, collisionPoint);
-            // console.log(`col: ${collisionPoint.x} ${collisionPoint.y}`)
-            // console.log("");
+
             if (cutLine == null) {
                 console.error("No cut line for prev out and cur in");
                 return;
@@ -67,8 +60,6 @@ class Slices {
             this.started = true;
             this.startCutLine = cutLine;
             this.lastPos = collisionPoint;
-
-            //console.log("got in");
 
         } else if (prevIn && !curIn) {
 

@@ -24,6 +24,7 @@ class GameState {
     constructor() {
         this.canvas = document.getElementById('gameBoard') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
+        initDebug(this.ctx);
         this.shape = new Shape(this.canvas, this.ctx);
         this.slices = new Slices(this.ctx, this.shape);
         this.score = 0;
@@ -128,6 +129,7 @@ class GameState {
 
         this.shape.render();
         this.slices.render();
+        renderDebugKeeps();
         this.updateUI();
     }
 
