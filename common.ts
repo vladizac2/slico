@@ -5,7 +5,8 @@ function IS_ZERO(val: number) {
 
 enum Color {
     YELLOW = '#ffff00',
-    RED = '#ff0000'
+    RED = '#ff0000',
+    BLUE = '#0000ff'
 }
 
 interface Point {
