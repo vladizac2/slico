@@ -1,0 +1,27 @@
+{
+    "name": "mobile-game",
+    "version": "1.0.0",
+    "description": "A mobile-friendly HTML5 game built with TypeScript",
+    "main": "script.ts",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "serve": "npx serve .",
+        "start": "npm run build && npm run serve",
+        "clean": "rimraf dist"
+    },
+    "keywords": [
+        "game",
+        "mobile",
+        "typescript",
+        "html5",
+        "canvas"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^5.9.3",
+        "serve": "^14.2.5",
+        "rimraf": "^5.0.0"
+    }
+}

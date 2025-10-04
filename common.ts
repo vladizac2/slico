@@ -8,6 +8,12 @@ interface Point {
     y: number;
 }
 
+function calcDist(p1: Point, p2: Point): number {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
 class Line {
 
     private p1: Point;
@@ -21,7 +27,7 @@ class Line {
         this.m = 1;
         this.calcM();
 
-        this.d = this.calcDist(p1, p2);
+        this.d = calcDist(p1, p2);
     }
 
     public getP1(): Point {
@@ -42,10 +48,31 @@ class Line {
         this.m = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);
     }
 
-    private calcDist(p1: Point, p2: Point): number {
-        const dx = p2.x - p1.x;
-        const dy = p2.y - p1.y;
-        return Math.sqrt(dx * dx + dy * dy);
+    public getM(): number {
+        return this.m;
+    }
+
+    public calcCollision(line: Line, collidePoint: Point): boolean {
+
+        const x1 = this.p1.x;
+        const y1 = this.p1.y;
+        const m1 = this.m;
+
+        const x2 = line.getP1().x;
+        const y2 = line.getP1().y;
+        const m2 = line.getM();
+
+        if (IS_ZERO(m1 - m2)) {
+            return false;
+        }
+
+        const x = (y2 - y1 + m1 * x1 - m2 * x2) / (m1 - m2);
+        const y = m2 * (x - x2) + y2;
+
+        collidePoint.x = x;
+        collidePoint.y = y;
+
+        return true;
     }
 
     public checkParallelYLineCollides(parallelPoint: Point): boolean {
@@ -62,12 +89,12 @@ class Line {
 
         const p = { x: x, y: parallelPoint.y };
 
-        const d1 = this.calcDist(p, this.p1);
+        const d1 = calcDist(p, this.p1);
         if (d1 > this.d) {
             return false;
         }
 
-        const d2 = this.calcDist(p, this.p2);
+        const d2 = calcDist(p, this.p2);
         if (d2 > this.d) {
             return false;
         }

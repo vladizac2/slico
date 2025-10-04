@@ -1,4 +1,3 @@
-
 // Shape Class
 class Shape {
     private canvas: HTMLCanvasElement;
@@ -9,6 +8,35 @@ class Shape {
         this.canvas = canvas;
         this.ctx = ctx;
         this.lines = [];
+    }
+
+    public calcCutLine(p1: Point, p2: Point, collisionPoint: Point): (Line | null) {
+
+        const curLine: Line = new Line(p1, p2);
+        collisionPoint = { x: 0, y: 0 };
+        let minDist = -1;
+        let cutLine: Line | null = null;
+
+        for (const line of this.lines) {
+
+            if (line.calcCollision(curLine, collisionPoint)) {
+
+                let tmp: Point = { x: 0, y: 0 };
+                const d = calcDist(tmp, p1);
+
+                if (minDist < 0 || d < minDist) {
+                    minDist = d;
+                    cutLine = line;
+                    collisionPoint = tmp;
+                }
+            }
+        }
+
+        return cutLine;
+    }
+
+    public handleCutShape(sliceLines: Line[], endCutLine: Line, startCutLine: Line | null) {
+
     }
 
     public render() {
