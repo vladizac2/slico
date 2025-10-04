@@ -14,24 +14,26 @@ class Shape {
 
         const curLine: Line = new Line(p1, p2);
         collisionPoint = { x: 0, y: 0 };
+        let tmp: Point = { x: 0, y: 0 };
         let minDist = -1;
         let cutLine: Line | null = null;
 
         for (const line of this.lines) {
 
-            if (line.calcCollision(curLine, collisionPoint)) {
+            if (line.calcCollision(curLine, tmp)) {
 
-                let tmp: Point = { x: 0, y: 0 };
                 const d = calcDist(tmp, p1);
 
                 if (minDist < 0 || d < minDist) {
                     minDist = d;
                     cutLine = line;
-                    collisionPoint = tmp;
+                    collisionPoint.x = tmp.x;
+                    collisionPoint.y = tmp.y;
                 }
             }
         }
 
+        //console.log(`set: ${collisionPoint.x} ${collisionPoint.y}`);
         return cutLine;
     }
 

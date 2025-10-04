@@ -10,7 +10,7 @@ class Slices {
     private lastPos: Point;
     private newSliceTime: number;
 
-    private readonly NEW_SLICE_MS = 50;
+    private readonly NEW_SLICE_MS = 2;
 
     constructor(ctx: CanvasRenderingContext2D, shape: Shape) {
         this.ctx = ctx;
@@ -38,6 +38,7 @@ class Slices {
 
         if (this.newSliceTime >= this.NEW_SLICE_MS) {
             this.addNewLine(this.lastPos, curMousePos);
+            this.lastPos = curMousePos;
             this.newSliceTime = this.newSliceTime - this.NEW_SLICE_MS;
         }
     }
@@ -54,7 +55,10 @@ class Slices {
 
         if (!prevIn && curIn) {
             let collisionPoint = { x: 0, y: 0 };
+            // console.log("");
             const cutLine: Line | null = this.shape.calcCutLine(prevMousePos, curMousePos, collisionPoint);
+            // console.log(`col: ${collisionPoint.x} ${collisionPoint.y}`)
+            // console.log("");
             if (cutLine == null) {
                 console.error("No cut line for prev out and cur in");
                 return;
@@ -63,6 +67,9 @@ class Slices {
             this.started = true;
             this.startCutLine = cutLine;
             this.lastPos = collisionPoint;
+
+            //console.log("got in");
+
         } else if (prevIn && !curIn) {
 
             if (this.started) {
@@ -100,7 +107,7 @@ class Slices {
     private renderLine(lineIndex: number): void {
         const line = this.lines[lineIndex];
         this.ctx.strokeStyle = '#ffff00';
-        this.ctx.lineWidth = 3;
+        this.ctx.lineWidth = 6;
         this.ctx.beginPath();
         this.ctx.moveTo(line.getP1().x, line.getP1().y);
         this.ctx.lineTo(line.getP2().x, line.getP2().y);

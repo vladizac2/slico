@@ -122,6 +122,8 @@ class GameState {
 
         this.prevMousePos = { ... this.curMousePos };
         this.curMousePos = { ... this.mousePos };
+        // drawCircle(this.ctx, this.prevMousePos, Color.YELLOW);
+        // drawCircle(this.ctx, this.curMousePos, Color.RED);
         this.slices.update(this.prevMousePos, this.curMousePos);
 
         this.shape.render();
