@@ -3,6 +3,11 @@ function IS_ZERO(val: number) {
     return (val >= -MIN_VAL && val <= MIN_VAL);
 }
 
+enum Color {
+    YELLOW = '#ffff00',
+    RED = '#ff0000'
+}
+
 interface Point {
     x: number;
     y: number;

@@ -128,7 +128,28 @@ class GameState {
         this.shape.render();
         this.slices.render();
         renderDebugKeeps();
+
+        //this.drawCircle(this.prevMousePos, Color.YELLOW);
+        this.drawCircle(this.curMousePos, Color.RED);
+
         this.updateUI();
+    }
+
+    private drawCircle(center: Point, fillColor: Color): void {
+
+        let r = 15; // Bigger default radius
+
+        this.ctx.beginPath();
+        this.ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
+
+        // Always fill with bright color
+        this.ctx.fillStyle = fillColor || Color.YELLOW; // Default bright yellow
+        this.ctx.fill();
+
+        // Always stroke with contrasting color
+        this.ctx.strokeStyle = '#000000'; // Default black border
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
     }
 
     private restartGame(): void {

@@ -1,7 +1,3 @@
-enum Color {
-    YELLOW = '#ffff00',
-    RED = '#ff0000'
-}
 
 interface DrawPoint {
     p: Point;
