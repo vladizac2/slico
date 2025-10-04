@@ -3,11 +3,17 @@ class Shape {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private lines: Line[];
+    private minPointsDist: number;
 
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.lines = [];
+        this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * MIN_VAL * 10;
+    }
+
+    public getMinPointsDist(): number {
+        return this.minPointsDist;
     }
 
     public calcCutLine(p1: Point, p2: Point, collisionPoint: Point): (Line | null) {

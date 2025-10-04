@@ -74,8 +74,6 @@ class GameState {
         this.mousePos.x = e.clientX - rect.left;
         this.mousePos.y = e.clientY - rect.top;
 
-        // console.log(`p: ${this.prevMousePos.x} ${this.prevMousePos.y} - p: ${this.mousePos.x} ${this.mousePos.y}`)
-
     }
 
     private startGame(mode: 'timed' | 'infinite'): void {
