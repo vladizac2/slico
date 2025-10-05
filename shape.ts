@@ -9,7 +9,7 @@ class Shape {
         this.canvas = canvas;
         this.ctx = ctx;
         this.lines = [];
-        this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * MIN_VAL * 10;
+        this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * 0.05;
     }
 
     public getMinPointsDist(): number {

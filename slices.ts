@@ -39,12 +39,9 @@ class Slices {
 
         this.newSliceTime++;
 
-        if (this.newSliceTime >= this.NEW_SLICE_TIME) {
+        if (this.newSliceTime >= this.NEW_SLICE_TIME && calcDist(this.lastPos, curMousePos) > this.shape.getMinPointsDist()) {
 
-            if (calcDist(this.lastPos, curMousePos) > this.shape.getMinPointsDist()) {
-                this.addNewLine(this.lastPos, curMousePos);
-            }
-
+            this.addNewLine(this.lastPos, curMousePos);
             this.lastPos = curMousePos;
             this.newSliceTime = this.newSliceTime - this.NEW_SLICE_TIME;
         }

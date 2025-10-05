@@ -56,7 +56,7 @@ class SlicedShape {
 
         drawCircle(this.startSlicePoint, Color.BLUE);
 
-        if (this.endSlicePoint) {
+        if (this.endSlicePointShown) {
             drawCircle(this.endSlicePoint, Color.BLUE);
         }
 
