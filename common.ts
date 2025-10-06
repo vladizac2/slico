@@ -20,6 +20,11 @@ function calcDist(p1: Point, p2: Point): number {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
+function calcSmlDiffPoint(p1: Point, p2: Point): Point {
+    const t = MIN_VAL * 5;
+    return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
+}
+
 class Line {
 
     private p1: Point;
@@ -58,6 +63,20 @@ class Line {
         return this.m;
     }
 
+    private calcPointInLine(p: Point): boolean {
+        const d1 = calcDist(p, this.p1);
+        if (d1 > this.d) {
+            return false;
+        }
+
+        const d2 = calcDist(p, this.p2);
+        if (d2 > this.d) {
+            return false;
+        }
+
+        return true;
+    }
+
     public calcCollision(line: Line, collidePoint: Point): boolean {
 
         const x1 = this.p1.x;
@@ -78,6 +97,10 @@ class Line {
         collidePoint.x = x;
         collidePoint.y = y;
 
+        if (!this.calcPointInLine(collidePoint)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -95,13 +118,7 @@ class Line {
 
         const p = { x: x, y: parallelPoint.y };
 
-        const d1 = calcDist(p, this.p1);
-        if (d1 > this.d) {
-            return false;
-        }
-
-        const d2 = calcDist(p, this.p2);
-        if (d2 > this.d) {
+        if (!this.calcPointInLine(p)) {
             return false;
         }
 
