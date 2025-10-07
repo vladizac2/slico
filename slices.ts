@@ -61,55 +61,6 @@ class Slices {
         }
     }
 
-    private handleMultColliding(curLine: Line): boolean {
-
-        let collidePoints: CollidePoint[] = [];
-        this.shape.buildLineCollisions(curLine, collidePoints);
-
-        if (collidePoints.length <= 1) {
-            return false;
-        }
-
-        let isIn = this.shape.inside(curLine.getStart());
-
-        if (isIn) {
-            this.lastPos = curLine.getStart();
-        }
-
-        for (let i = 0; i < collidePoints.length; i++) {
-
-            const cp = collidePoints[i];
-
-            if (!isIn) {
-                this.lastPos = cp.p;
-                this.startCutLine = cp.line;
-                this.started = true;
-                this.addSlicedShape(this.lastPos);
-
-                //console.log(`1: ${this.shape.inside(this.lastPos)} ${this.shape.inside(calcSmlDiffPoint(this.lastPos, curLine.getEnd()))} `);
-            } else {
-
-                if (this.started) {
-
-                    this.started = false;
-                    this.addNewLine(this.lastPos, cp.p);
-
-                    this.startSlicedShape(cp.p);
-                    this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
-                    // console.log("2");
-                } else {
-                    // console.log("2.5");
-                }
-
-                this.initSlice();
-            }
-
-            isIn = !isIn;
-        }
-
-        return true;
-    }
-
     private checkSelfCollision(prevMousePos: Point, curMousePos: Point) {
 
         for (const line of this.lines) {
@@ -123,63 +74,56 @@ class Slices {
             return;
         }
 
-        // console.log("-------------------------");
-
         let curLine = new Line(prevMousePos, curMousePos);
-        if (this.handleMultColliding(curLine)) {
-            return;
+        let collidePoints: CollidePoint[] = [];
+        this.shape.buildLineCollisions(curLine, collidePoints);
+
+        let isIn = this.shape.inside(curLine.getStart());
+
+        if (collidePoints.length > 0 && isIn) {
+            this.lastPos = curLine.getStart();
         }
 
-        const prevIn = this.shape.inside(prevMousePos);
-        const curIn = this.shape.inside(curMousePos);
+        for (let i = 0; i < collidePoints.length; i++) {
 
-        //console.log(`out: ${prevIn} ${curIn} ${this.started} `)
+            const cp = collidePoints[i];
 
-        if (!prevIn && curIn) {
-            let collisionPoint = { x: 0, y: 0 };
-            const cutLine: Line | null = this.shape.calcCutLine(prevMousePos, curMousePos, collisionPoint);
+            if (!isIn) {
+                this.lastPos = cp.p;
+                this.startCutLine = cp.line;
+                this.started = true;
+                this.addSlicedShape(this.lastPos);
 
-            if (cutLine == null) {
-                console.error("No cut line for prev out and cur in");
-                return;
-            }
+            } else {
 
-            this.started = true;
-            this.startCutLine = cutLine;
-            this.lastPos = collisionPoint;
+                if (this.started) {
 
-            this.addSlicedShape(this.lastPos);
+                    this.started = false;
+                    this.addNewLine(this.lastPos, cp.p);
 
-        } else if (prevIn && !curIn) {
+                    this.startSlicedShape(cp.p);
+                    this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
 
-            if (this.started) {
-
-                let collisionPoint = { x: 0, y: 0 };
-                const cutLine: Line | null = this.shape.calcCutLine(prevMousePos, curMousePos, collisionPoint);
-                if (cutLine == null) {
-                    console.error("No cut line for prev in and cur out");
-                    return;
                 }
 
-                this.started = false;
-                this.addNewLine(this.lastPos, collisionPoint);
-
-                this.startSlicedShape(collisionPoint);
-                this.shape.handleCutShape(this.lines, cutLine, this.startCutLine);
+                this.initSlice();
             }
 
-            this.initSlice();
+            isIn = !isIn;
+        }
 
-        } else if (prevIn && curIn && !this.started) {
+        let curIn = this.shape.inside(curLine.getEnd());
+
+        if (isIn && curIn && !this.started) {
             this.started = true;
-            this.lastPos = curMousePos;
+            this.lastPos = curLine.getEnd();
 
             this.addSlicedShape(this.lastPos);
-        } else if (!prevIn && !curIn) {
+        } else if (!isIn && !curIn) {
             return;
         }
 
-        this.handleSpawningNewLine(curMousePos);
+        this.handleSpawningNewLine(curLine.getEnd());
     }
 
     private initSlice() {
