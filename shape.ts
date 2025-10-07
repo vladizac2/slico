@@ -99,7 +99,7 @@ class Shape {
         return collideCount % 2 != 0;
     }
 
-    private generateRandomShape(): void {
+    public generateRandomShape(): void {
         if (!this.canvas) {
             return;
         }

@@ -13,6 +13,9 @@ class GameState {
     private gameMode: 'timed' | 'infinite';
     private gameTime: number;
     private gameStartTime: number;
+    private shapeSpawnTimeout: number | null;
+    private shapeSpawnDelay: number;
+    private shapeSpawnStartTime: number;
 
     private slices: Slices;
 
@@ -37,6 +40,9 @@ class GameState {
         this.gameMode = 'infinite';
         this.gameTime = 0;
         this.gameStartTime = 0;
+        this.shapeSpawnTimeout = null;
+        this.shapeSpawnDelay = 3000; // 3 seconds
+        this.shapeSpawnStartTime = 0;
 
         // Initialize controls
         this.mousePos = { x: 0, y: 0 };
@@ -74,7 +80,6 @@ class GameState {
         const rect = this.canvas.getBoundingClientRect();
         this.mousePos.x = e.clientX - rect.left;
         this.mousePos.y = e.clientY - rect.top;
-
     }
 
     private startGame(mode: 'timed' | 'infinite'): void {
@@ -100,10 +105,28 @@ class GameState {
         this.prevMousePos = { ... this.mousePos };
         this.curMousePos = { ... this.mousePos };
 
+        // Clear any existing timeout
+        if (this.shapeSpawnTimeout) {
+            clearTimeout(this.shapeSpawnTimeout);
+        }
+
+        // Start the game loop immediately but delay shape spawning
         this.updateUI();
         this.gameLoop = setInterval(() => this.update(), this.gameSpeed);
+
+        // Record when shape spawning started
+        this.shapeSpawnStartTime = Date.now();
+
+        // Spawn shape after 3 seconds
+        this.shapeSpawnTimeout = setTimeout(() => {
+            this.spawnShape();
+        }, this.shapeSpawnDelay);
     }
 
+    private spawnShape(): void {
+        this.shape.generateRandomShape();
+        this.shapeSpawnTimeout = null; // Clear the timeout reference
+    }
 
     private update(): void {
 
@@ -120,18 +143,48 @@ class GameState {
 
         this.clearCanvas();
 
-        this.prevMousePos = { ... this.curMousePos };
-        this.curMousePos = { ... this.mousePos };
-        // drawCircle(this.ctx, this.prevMousePos, Color.YELLOW);
-        // drawCircle(this.ctx, this.curMousePos, Color.RED);
-        this.slices.update(this.prevMousePos, this.curMousePos);
+        // Show countdown if shape hasn't spawned yet
+        if (this.shapeSpawnTimeout) {
+            const elapsed = Date.now() - this.shapeSpawnStartTime;
+            const remaining = Math.max(0, this.shapeSpawnDelay - elapsed);
+            const seconds = Math.ceil(remaining / 1000);
 
-        this.shape.render();
-        this.slices.render();
-        renderDebugKeeps();
+            if (seconds > 0) {
+                // Create a semi-transparent background circle
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.beginPath();
+                this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, 60, 0, 2 * Math.PI);
+                this.ctx.fill();
 
-        //this.drawCircle(this.prevMousePos, Color.YELLOW);
-        drawCircle(this.mousePos, Color.RED);
+                // Add a border
+                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.lineWidth = 3;
+                this.ctx.stroke();
+
+                // Draw the countdown number with better styling
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = 'bold 64px "Segoe UI", Arial, sans-serif';
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText(seconds.toString(), this.canvas.width / 2, this.canvas.height / 2);
+
+                // Add a subtle glow effect
+                this.ctx.shadowColor = '#00ffff';
+                this.ctx.shadowBlur = 20;
+                this.ctx.fillText(seconds.toString(), this.canvas.width / 2, this.canvas.height / 2);
+                this.ctx.shadowBlur = 0;
+            }
+
+        } else {
+            this.prevMousePos = { ... this.curMousePos };
+            this.curMousePos = { ... this.mousePos };
+            this.slices.update(this.prevMousePos, this.curMousePos);
+
+            this.shape.render();
+            this.slices.render();
+            renderDebugKeeps();
+            drawCircle(this.mousePos, Color.RED);
+        }
 
         this.updateUI();
     }
@@ -142,6 +195,10 @@ class GameState {
         if (this.gameLoop) {
             clearInterval(this.gameLoop);
             this.gameLoop = null;
+        }
+        if (this.shapeSpawnTimeout) {
+            clearTimeout(this.shapeSpawnTimeout);
+            this.shapeSpawnTimeout = null;
         }
 
         // Show start menu and hide game over screen
@@ -204,6 +261,10 @@ class GameState {
     private gameOver(): void {
         this.gameRunning = false;
         clearInterval(this.gameLoop!);
+        if (this.shapeSpawnTimeout) {
+            clearTimeout(this.shapeSpawnTimeout);
+            this.shapeSpawnTimeout = null;
+        }
 
         document.getElementById('finalScore')!.textContent = this.score.toString();
         document.getElementById('finalLevel')!.textContent = this.level.toString();
