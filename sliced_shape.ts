@@ -19,7 +19,11 @@ class SlicedShape {
     }
 
     public start(endSlicePoint: Point, sliceLines: Line[]) {
-        this.sliceLines = sliceLines;
+
+        for (const line of sliceLines) {
+            this.sliceLines.push(new Line(line.getStart(), line.getEnd()));
+        }
+
         this.endSlicePoint = { ...endSlicePoint };
         this.endSlicePointShown = true;
         this.showTime++;

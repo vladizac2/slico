@@ -56,7 +56,7 @@ class Slices {
         if (this.curSlicedShape == null) {
             console.error("Cur slice shape is null in end");
         } else {
-            this.curSlicedShape.start(endSlicePoint);
+            this.curSlicedShape.start(endSlicePoint, this.lines);
             this.curSlicedShape = null;
         }
     }
@@ -80,7 +80,7 @@ class Slices {
 
         let isIn = this.shape.inside(curLine.getStart());
 
-        if (collidePoints.length > 0 && isIn) {
+        if (!this.started && isIn) {
             this.lastPos = curLine.getStart();
         }
 
