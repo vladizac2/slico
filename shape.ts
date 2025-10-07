@@ -16,6 +16,19 @@ class Shape {
         return this.minPointsDist;
     }
 
+    public buildLineCollisions(curLine: Line, collidePoints: CollidePoint[]) {
+
+        for (const line of this.lines) {
+
+            let collidePoint = { x: 0, y: 0 };
+
+            if (curLine.calcCollision(line, collidePoint)) {
+                let d = calcDist(collidePoint, curLine.getStart());
+                collidePoints.push({ p: collidePoint, d: d, line: line });
+            }
+        }
+    }
+
     public calcCutLine(p1: Point, p2: Point, collisionPoint: Point): (Line | null) {
 
         const curLine: Line = new Line(p1, p2);
@@ -58,9 +71,9 @@ class Shape {
         this.ctx.beginPath();
 
         if (this.lines.length > 0) {
-            this.ctx.moveTo(this.lines[0].getP1().x, this.lines[0].getP1().y);
+            this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
             for (const line of this.lines) {
-                this.ctx.lineTo(line.getP2().x, line.getP2().y);
+                this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
             }
             this.ctx.closePath();
         }

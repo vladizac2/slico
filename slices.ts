@@ -61,69 +61,79 @@ class Slices {
         }
     }
 
-    private scanColliding(startPos: Point, curMousePos: Point) {
-
-        if (calcDist(startPos, curMousePos) <= MIN_VAL) {
-            return;
-        }
-
-        let curLine = new Line(startPos, curMousePos);
-
-        interface CollidePoint {
-            p: Point;
-            d: number;
-            line: Line;
-        }
+    private handleMultColliding(curLine: Line): boolean {
 
         let collidePoints: CollidePoint[] = [];
+        this.shape.buildLineCollisions(curLine, collidePoints);
+
+        if (collidePoints.length <= 1) {
+            return false;
+        }
+
+        let isIn = this.shape.inside(curLine.getStart());
+
+        if (isIn) {
+            this.lastPos = curLine.getStart();
+        }
+
+        for (let i = 0; i < collidePoints.length; i++) {
+
+            const cp = collidePoints[i];
+
+            if (!isIn) {
+                this.lastPos = cp.p;
+                this.startCutLine = cp.line;
+                this.started = true;
+                this.addSlicedShape(this.lastPos);
+
+                //console.log(`1: ${this.shape.inside(this.lastPos)} ${this.shape.inside(calcSmlDiffPoint(this.lastPos, curLine.getEnd()))} `);
+            } else {
+
+                if (this.started) {
+
+                    this.started = false;
+                    this.addNewLine(this.lastPos, cp.p);
+
+                    this.startSlicedShape(cp.p);
+                    this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
+                    // console.log("2");
+                } else {
+                    // console.log("2.5");
+                }
+
+                this.initSlice();
+            }
+
+            isIn = !isIn;
+        }
+
+        return true;
+    }
+
+    private checkSelfCollision(prevMousePos: Point, curMousePos: Point) {
 
         for (const line of this.lines) {
 
-            let collidePoint = { x: 0, y: 0 };
-
-            if (curLine.calcCollision(line, collidePoint)) {
-                let d = calcDist(collidePoint, startPos);
-                collidePoints.push({ p: collidePoint, d: d, line: line });
-            }
         }
-
-        // Sort by distance (closest first)
-        collidePoints.sort((a, b) => a.d - b.d);
-
-        let isIn = this.shape.inside(startPos);
-
-        if (isIn) {
-            this.lastPos = startPos;
-        }
-
-        // if (collidePoints.length > 0) {
-        //     console.log(`count: ${collidePoints.length}`);
-        //     drawDebugCircle(startPos, Color.RED, true);
-        //     drawDebugCircle(curMousePos, Color.YELLOW, true);
-        // }
-
-        // for (const cp of collidePoints) {
-
-        //     if (!isIn) {
-        //         this.lastPos = cp.p;
-        //         this.startCutLine = cp.line;
-        //         this.addSlicedShape(this.lastPos);
-        //     } else {
-        //         this.addNewLine(this.lastPos, cp.p);
-        //         this.lastPos = cp.p;
-        //         this.startSlicedShape(this.lastPos);
-        //         this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
-        //         this.startCutLine = null;
-        //     }
-
-        //     isIn = !isIn;
-        // }
     }
 
     public update(prevMousePos: Point, curMousePos: Point) {
 
+        if (calcDist(prevMousePos, curMousePos) <= MIN_VAL) {
+            return;
+        }
+
+        // console.log("-------------------------");
+
+        let curLine = new Line(prevMousePos, curMousePos);
+        if (this.handleMultColliding(curLine)) {
+            return;
+        }
+
         const prevIn = this.shape.inside(prevMousePos);
         const curIn = this.shape.inside(curMousePos);
+
+        //console.log(`out: ${prevIn} ${curIn} ${this.started} `)
 
         if (!prevIn && curIn) {
             let collisionPoint = { x: 0, y: 0 };
@@ -142,8 +152,6 @@ class Slices {
 
         } else if (prevIn && !curIn) {
 
-            let startPos = prevMousePos;
-
             if (this.started) {
 
                 let collisionPoint = { x: 0, y: 0 };
@@ -158,12 +166,7 @@ class Slices {
 
                 this.startSlicedShape(collisionPoint);
                 this.shape.handleCutShape(this.lines, cutLine, this.startCutLine);
-
-                startPos = calcSmlDiffPoint(collisionPoint, curMousePos);
             }
-
-
-            this.scanColliding(startPos, curMousePos);
 
             this.initSlice();
 
@@ -173,7 +176,6 @@ class Slices {
 
             this.addSlicedShape(this.lastPos);
         } else if (!prevIn && !curIn) {
-            // this.scanColliding(prevMousePos, curMousePos);
             return;
         }
 
@@ -199,21 +201,15 @@ class Slices {
             drawLine(this.lines[i], Color.YELLOW, 12);
         }
 
-        let removalIndexes = [];
-
-        for (let i = 0; i < this.slicedShapes.length; i++) {
+        for (let i = this.slicedShapes.length - 1; i >= 0; i--) {
             const slicedShape = this.slicedShapes[i];
             const remove = slicedShape.render();
             if (remove) {
-                removalIndexes.push(i);
+                this.slicedShapes.splice(i, 1);
             }
         }
 
-        for (const removalIndex of removalIndexes) {
-            if (removalIndex > -1) {
-                this.slicedShapes.splice(removalIndex, 1);
-            }
-        }
+        // console.log(`count: ${this.slicedShapes.length}`);
 
     }
 

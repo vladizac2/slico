@@ -14,6 +14,12 @@ interface Point {
     y: number;
 }
 
+interface CollidePoint {
+    p: Point;
+    d: number;
+    line: Line;
+}
+
 function calcDist(p1: Point, p2: Point): number {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
@@ -21,42 +27,42 @@ function calcDist(p1: Point, p2: Point): number {
 }
 
 function calcSmlDiffPoint(p1: Point, p2: Point): Point {
-    const t = MIN_VAL * 5;
+    const t = MIN_VAL;
     return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
 }
 
 class Line {
 
-    private p1: Point;
-    private p2: Point;
+    private start: Point;
+    private end: Point;
     private m: number;
     private d: number;
 
-    constructor(p1: Point, p2: Point) {
-        this.p1 = p1;
-        this.p2 = p2;
+    constructor(start: Point, end: Point) {
+        this.start = start;
+        this.end = end;
         this.m = 1;
         this.calcM();
 
-        this.d = calcDist(p1, p2);
+        this.d = calcDist(start, end);
     }
 
-    public getP1(): Point {
-        return this.p1;
+    public getStart(): Point {
+        return this.start;
     }
 
-    public getP2(): Point {
-        return this.p2;
+    public getEnd(): Point {
+        return this.end;
     }
 
     private calcM() {
 
-        if (IS_ZERO(this.p2.x - this.p1.x)) {
+        if (IS_ZERO(this.end.x - this.start.x)) {
             this.m = 1;
             return;
         }
 
-        this.m = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);
+        this.m = (this.end.y - this.start.y) / (this.end.x - this.start.x);
     }
 
     public getM(): number {
@@ -64,12 +70,12 @@ class Line {
     }
 
     private calcPointInLine(p: Point): boolean {
-        const d1 = calcDist(p, this.p1);
+        const d1 = calcDist(p, this.start);
         if (d1 > this.d) {
             return false;
         }
 
-        const d2 = calcDist(p, this.p2);
+        const d2 = calcDist(p, this.end);
         if (d2 > this.d) {
             return false;
         }
@@ -79,12 +85,12 @@ class Line {
 
     public calcCollision(line: Line, collidePoint: Point): boolean {
 
-        const x1 = this.p1.x;
-        const y1 = this.p1.y;
+        const x1 = this.start.x;
+        const y1 = this.start.y;
         const m1 = this.m;
 
-        const x2 = line.getP1().x;
-        const y2 = line.getP1().y;
+        const x2 = line.getStart().x;
+        const y2 = line.getStart().y;
         const m2 = line.getM();
 
         if (IS_ZERO(m1 - m2)) {
@@ -101,6 +107,10 @@ class Line {
             return false;
         }
 
+        if (!line.calcPointInLine(collidePoint)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -110,7 +120,7 @@ class Line {
             return false;
         }
 
-        const x = (parallelPoint.y - this.p1.y) / this.m + this.p1.x;
+        const x = (parallelPoint.y - this.start.y) / this.m + this.start.x;
 
         if (x < parallelPoint.x) {
             return false;

@@ -41,9 +41,9 @@ class SlicedShape {
         this.ctx.beginPath();
 
         if (this.lines.length > 0) {
-            this.ctx.moveTo(this.lines[0].getP1().x, this.lines[0].getP1().y);
+            this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
             for (const line of this.lines) {
-                this.ctx.lineTo(line.getP2().x, line.getP2().y);
+                this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
             }
             this.ctx.closePath();
         }

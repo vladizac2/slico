@@ -25,7 +25,7 @@ function drawLine(line: Line, color: Color, lineWidth: number): void {
     renderCtx.strokeStyle = color;
     renderCtx.lineWidth = lineWidth;
     renderCtx.beginPath();
-    renderCtx.moveTo(line.getP1().x, line.getP1().y);
-    renderCtx.lineTo(line.getP2().x, line.getP2().y);
+    renderCtx.moveTo(line.getStart().x, line.getStart().y);
+    renderCtx.lineTo(line.getEnd().x, line.getEnd().y);
     renderCtx.stroke();
 }
