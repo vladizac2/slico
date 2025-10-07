@@ -29,6 +29,13 @@ class SlicedShape {
         this.showTime++;
     }
 
+    public set(startSlicePoint: Point) {
+        this.lines = [];
+        this.sliceLines = [];
+        this.startSlicePoint = { ...startSlicePoint };
+        this.endSlicePoint = { x: 0, y: 0 };
+    }
+
     public render(): boolean {
 
         if (this.showTime >= this.SLICE_POINT_SHOW_TIME) {

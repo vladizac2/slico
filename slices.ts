@@ -61,11 +61,54 @@ class Slices {
         }
     }
 
-    private checkSelfCollision(prevMousePos: Point, curMousePos: Point) {
+    private setSlicedShape(newStartSlicePoint: Point) {
 
-        for (const line of this.lines) {
-
+        if (this.curSlicedShape == null) {
+            console.error("Cur slice shape is null in set");
+        } else {
+            this.curSlicedShape.set(newStartSlicePoint);
         }
+    }
+
+    private checkSelfCollision(curMousePos: Point) {
+
+        let tmp = { x: 0, y: 0 };
+        let minDist = -1;
+        let minCollidePoint = { x: 0, y: 0 };
+        let minCollideLine: Line | null = null;
+
+        if (this.lines.length <= 0) {
+            return;
+        }
+
+        const lastLine = this.lines[this.lines.length - 1];
+
+        for (let i = 0; i < this.lines.length - 2; i++) {
+            const line = this.lines[i];
+
+            if (line.calcCollision(lastLine, tmp)) {
+                const d = calcDist(tmp, lastLine.getStart());
+
+                if (minDist < 0 || d < minDist) {
+                    minDist = d;
+                    minCollideLine = line;
+                    minCollidePoint = { ...tmp };
+                }
+            }
+        }
+
+        if (minCollideLine != null) {
+
+            this.clearSlice();
+
+            this.started = true;
+            this.lastPos = curMousePos;
+
+            this.setSlicedShape(this.lastPos);
+            return true;
+        }
+
+        return false;
     }
 
     public update(prevMousePos: Point, curMousePos: Point) {
@@ -75,6 +118,13 @@ class Slices {
         }
 
         let curLine = new Line(prevMousePos, curMousePos);
+
+        //console.log("----------------");
+
+        if (this.checkSelfCollision(curMousePos)) {
+            return;
+        }
+
         let collidePoints: CollidePoint[] = [];
         this.shape.buildLineCollisions(curLine, collidePoints);
 
@@ -93,7 +143,6 @@ class Slices {
                 this.startCutLine = cp.line;
                 this.started = true;
                 this.addSlicedShape(this.lastPos);
-
             } else {
 
                 if (this.started) {
@@ -106,7 +155,7 @@ class Slices {
 
                 }
 
-                this.initSlice();
+                this.clearSlice();
             }
 
             isIn = !isIn;
@@ -126,7 +175,7 @@ class Slices {
         this.handleSpawningNewLine(curLine.getEnd());
     }
 
-    private initSlice() {
+    private clearSlice() {
         this.lines = [];
         this.started = false;
         this.lastPos = { x: 0, y: 0 };
@@ -134,7 +183,7 @@ class Slices {
     }
 
     public reset() {
-        this.initSlice();
+        this.clearSlice();
         this.curSlicedShape = null;
         this.slicedShapes = [];
     }
