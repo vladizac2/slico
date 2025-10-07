@@ -105,6 +105,12 @@ class Slices {
             this.lastPos = curMousePos;
 
             this.setSlicedShape(this.lastPos);
+
+            // if (calcDist(this.lastPos, minCollidePoint) > this.shape.getMinPointsDist()) {
+            //     this.addNewLine(minCollidePoint, this.lastPos);
+            // }
+
+            console.log("0.1");
             return true;
         }
 
@@ -119,7 +125,7 @@ class Slices {
 
         let curLine = new Line(prevMousePos, curMousePos);
 
-        //console.log("----------------");
+        console.log("----------------");
 
         if (this.checkSelfCollision(curMousePos)) {
             return;
@@ -143,6 +149,7 @@ class Slices {
                 this.startCutLine = cp.line;
                 this.started = true;
                 this.addSlicedShape(this.lastPos);
+                console.log("1");
             } else {
 
                 if (this.started) {
@@ -152,10 +159,13 @@ class Slices {
 
                     this.startSlicedShape(cp.p);
                     this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
-
+                    console.log("2");
+                } else {
+                    console.log("2.5");
                 }
 
                 this.clearSlice();
+
             }
 
             isIn = !isIn;
@@ -168,6 +178,7 @@ class Slices {
             this.lastPos = curLine.getEnd();
 
             this.addSlicedShape(this.lastPos);
+            console.log("3");
         } else if (!isIn && !curIn) {
             return;
         }
