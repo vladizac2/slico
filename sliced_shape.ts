@@ -2,6 +2,7 @@
 class SlicedShape {
     private ctx: CanvasRenderingContext2D;
     private lines: Line[];
+    private sliceLines: Line[];
     private endSlicePointShown = false;
     private startSlicePoint: Point;
     private endSlicePoint: Point;
@@ -12,11 +13,13 @@ class SlicedShape {
     constructor(ctx: CanvasRenderingContext2D, startSlicePoint: Point) {
         this.ctx = ctx;
         this.lines = [];
+        this.sliceLines = [];
         this.startSlicePoint = { ...startSlicePoint };
         this.endSlicePoint = { x: 0, y: 0 };
     }
 
-    public start(endSlicePoint: Point) {
+    public start(endSlicePoint: Point, sliceLines: Line[]) {
+        this.sliceLines = sliceLines;
         this.endSlicePoint = { ...endSlicePoint };
         this.endSlicePointShown = true;
         this.showTime++;
@@ -35,6 +38,10 @@ class SlicedShape {
         const alpha = Math.max(0, 1 - dim);
 
         this.ctx.globalAlpha = alpha;
+
+        for (const line of this.sliceLines) {
+            drawLine(line, Color.YELLOW, 12);
+        }
 
         // Draw the shape with single background color
         this.ctx.fillStyle = '#FF6B6B';
