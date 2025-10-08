@@ -59,6 +59,7 @@ class GameState {
         document.getElementById('infiniteBtn')!.addEventListener('click', () => this.startGame('infinite'));
         document.getElementById('playAgainBtn')!.addEventListener('click', () => this.restartGame());
         document.getElementById('pauseBtn')!.addEventListener('click', () => this.showPauseMenu());
+        document.querySelector('.pause-display')!.addEventListener('click', () => this.showPauseMenu());
 
         // Pause menu controls
         document.getElementById('resumeBtn')!.addEventListener('click', () => this.resumeGame());
