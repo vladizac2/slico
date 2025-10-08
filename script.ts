@@ -257,6 +257,10 @@ class GameState {
             this.gameLoop = null;
         }
 
+        // Clear the canvas immediately
+        this.clearCanvas();
+        this.slices.reset();
+
         const gameMenu = document.getElementById('gameMenu') as HTMLElement;
         gameMenu.style.display = 'flex';
     }
