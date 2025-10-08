@@ -24,7 +24,7 @@ class SlicedShape {
             this.sliceLines.push(new Line(line.getStart(), line.getEnd()));
         }
 
-        drawDebugCircle(this.startSlicePoint, Color.RED, true);
+        // drawDebugCircle(this.startSlicePoint, Color.RED, true);
 
         this.endSlicePoint = { ...endSlicePoint };
         this.endSlicePointShown = true;

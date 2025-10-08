@@ -26,13 +26,14 @@ function calcDist(p1: Point, p2: Point): number {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-function calcSmlDiffPoint(p1: Point, p2: Point): Point {
-    const t = MIN_VAL;
+function calcSmlDiffPoint(p1: Point, p2: Point, diff: number): Point {
+    let t = diff;
     return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
 }
 
 class Line {
 
+    private readonly smlDiff = MIN_VAL * 5;
     private start: Point;
     private end: Point;
     private m: number;
@@ -41,6 +42,10 @@ class Line {
     constructor(start: Point, end: Point) {
         this.start = start;
         this.end = end;
+
+        this.start = calcSmlDiffPoint(this.start, this.end, -this.smlDiff);
+        this.end = calcSmlDiffPoint(this.end, this.start, -this.smlDiff);
+
         this.m = 1;
         this.calcM();
 

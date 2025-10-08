@@ -143,6 +143,9 @@ class GameState {
 
         this.clearCanvas();
 
+        this.prevMousePos = { ... this.curMousePos };
+        this.curMousePos = { ... this.mousePos };
+
         // Show countdown if shape hasn't spawned yet
         if (this.shapeSpawnTimeout) {
             const elapsed = Date.now() - this.shapeSpawnStartTime;
@@ -176,8 +179,7 @@ class GameState {
             }
 
         } else {
-            this.prevMousePos = { ... this.curMousePos };
-            this.curMousePos = { ... this.mousePos };
+
             this.slices.update(this.prevMousePos, this.curMousePos);
 
             this.shape.render();
