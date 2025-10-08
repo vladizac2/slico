@@ -70,7 +70,7 @@ class Slices {
         }
     }
 
-    private checkSelfCollision(curMousePos: Point) {
+    private handleSelfCollision(curMousePos: Point) {
 
         let tmp = { x: 0, y: 0 };
         let minDist = -1;
@@ -97,34 +97,30 @@ class Slices {
             }
         }
 
-        if (minCollideLine != null) {
-
-            this.clearSlice();
-
-            this.started = true;
-            this.lastPos = minCollidePoint;
-
-            this.setSlicedShape(this.lastPos);
-
-            return true;
+        if (minCollideLine == null) {
+            return;
         }
 
-        return false;
+        this.clearSlice();
+
+        this.started = true;
+        this.lastPos = minCollidePoint;
+
+        this.setSlicedShape(this.lastPos);
+
     }
 
     public update(prevMousePos: Point, curMousePos: Point) {
 
-        if (calcDist(prevMousePos, curMousePos) <= MIN_VAL) {
-            return;
-        }
+        // if (calcDist(prevMousePos, curMousePos) <= MIN_VAL) {
+        //     return;
+        // }
 
         let curLine = new Line(prevMousePos, curMousePos);
 
-        // console.log(`----------------`);
+        //console.log(`----------------`);
 
-        if (this.checkSelfCollision(curMousePos)) {
-            return;
-        }
+        this.handleSelfCollision(curMousePos);
 
         let collidePoints: CollidePoint[] = [];
         this.shape.buildLineCollisions(curLine, collidePoints);
@@ -153,7 +149,6 @@ class Slices {
 
                     this.startSlicedShape(cp.p);
                     this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
-
                 }
 
                 this.clearSlice();
@@ -198,13 +193,17 @@ class Slices {
 
         for (let i = this.slicedShapes.length - 1; i >= 0; i--) {
             const slicedShape = this.slicedShapes[i];
-            const remove = slicedShape.render();
+            let remove = slicedShape.render();
+
+            if (!remove && !slicedShape.started() && this.curSlicedShape != null
+                && i < this.slicedShapes.length - 1) {
+                remove = true;
+            }
+
             if (remove) {
                 this.slicedShapes.splice(i, 1);
             }
         }
-
-        // console.log(`count: ${this.slicedShapes.length}`);
 
     }
 
