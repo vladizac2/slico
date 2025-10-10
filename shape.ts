@@ -83,23 +83,23 @@ class Shape {
             this.generateRandomShape();
         }
 
-        // Draw the shape with single background color
-        this.ctx.fillStyle = '#FF6B6B';
-        this.ctx.beginPath();
+        // // Draw the shape with single background color
+        // this.ctx.fillStyle = '#FF6B6B';
+        // this.ctx.beginPath();
 
-        if (this.lines.length > 0) {
-            this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
-            for (const line of this.lines) {
-                this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
-            }
-            this.ctx.closePath();
-        }
-        this.ctx.fill();
+        // if (this.lines.length > 0) {
+        //     this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
+        //     for (const line of this.lines) {
+        //         this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
+        //     }
+        //     this.ctx.closePath();
+        // }
+        // this.ctx.fill();
 
-        // Draw outline for better visibility
-        this.ctx.strokeStyle = this.lineColor;
-        this.ctx.lineWidth = this.lineWidth;
-        this.ctx.stroke();
+        // // Draw outline for better visibility
+        // this.ctx.strokeStyle = this.lineColor;
+        // this.ctx.lineWidth = this.lineWidth;
+        // this.ctx.stroke();
     }
 
     public inside(pos: Point): boolean {
