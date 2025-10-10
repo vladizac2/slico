@@ -4,12 +4,33 @@ class Shape {
     private ctx: CanvasRenderingContext2D;
     private lines: Line[];
     private minPointsDist: number;
+    private baseRadius: number;
+    private grid: Grid;
 
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    private readonly lineColor = Color.BLACK;
+    private readonly lineWidth = 2;
+
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, grid: Grid) {
         this.canvas = canvas;
         this.ctx = ctx;
+        this.grid = grid;
+        this.baseRadius = 1;
         this.lines = [];
+
+        this.baseRadius = 1;
         this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * 0.05;
+    }
+
+    public onCanvasChanged() {
+        const padding = 60; // More padding to ensure shape fits
+        const maxRadius = Math.min(
+            (this.canvas.width - padding) / 2,
+            (this.canvas.height - padding) / 2
+        );
+        this.baseRadius = maxRadius * 0.8; // Use 80% of max radius for safety
+
+        const center = { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+        this.grid.onCanvasChanged(center, this.baseRadius);
     }
 
     public getMinPointsDist(): number {
@@ -56,10 +77,6 @@ class Shape {
         return cutLine;
     }
 
-    public handleCutShape(sliceLines: Line[], endCutLine: Line, startCutLine: Line | null) {
-
-    }
-
     public render() {
         if (this.lines.length === 0) {
             // Generate random shape if no lines exist
@@ -80,8 +97,8 @@ class Shape {
         this.ctx.fill();
 
         // Draw outline for better visibility
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = this.lineColor;
+        this.ctx.lineWidth = this.lineWidth;
         this.ctx.stroke();
     }
 
@@ -106,12 +123,6 @@ class Shape {
 
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
-        const padding = 60; // More padding to ensure shape fits
-        const maxRadius = Math.min(
-            (this.canvas.width - padding) / 2,
-            (this.canvas.height - padding) / 2
-        );
-        const baseRadius = maxRadius * 0.8; // Use 80% of max radius for safety
         const sides = Math.floor(Math.random() * 5) + 3; // 3-7 sides
 
         this.lines = [];
@@ -121,7 +132,10 @@ class Shape {
 
         for (let i = 0; i < sides; i++) {
             const angle = (i * 2 * Math.PI) / sides;
-            const radiusVariation = baseRadius + (Math.random() - 0.5) * (baseRadius * 0.3); // ±30% variation
+            let radiusVariation = this.baseRadius + (Math.random() - 0.5) * (this.baseRadius * 0.3); // ±30% variation
+            if (radiusVariation > this.baseRadius * 0.95) {
+                radiusVariation = this.baseRadius * 0.95;
+            }
             const angleVariation = (Math.random() - 0.5) * 0.4; // ±0.2 rad variation
 
             const x = centerX + radiusVariation * Math.cos(angle + angleVariation);
@@ -135,7 +149,9 @@ class Shape {
             const currentPoint = points[i];
             const nextPoint = points[(i + 1) % points.length];
 
-            this.lines.push(new Line(currentPoint, nextPoint));
+            const line = new Line(currentPoint, nextPoint);
+            this.lines.push(line);
+            this.grid.addLine(line);
         }
     }
 

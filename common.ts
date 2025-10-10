@@ -6,7 +6,8 @@ function IS_ZERO(val: number) {
 enum Color {
     YELLOW = '#ffff00',
     RED = '#ff0000',
-    BLUE = '#0000ff'
+    BLUE = '#0000ff',
+    BLACK = '#ffffff'
 }
 
 interface Point {
@@ -139,4 +140,21 @@ class Line {
 
         return true;
     }
+}
+
+interface CutLine {
+    line: Line;
+    collidePoint: Point;
+    lineIndex: number;
+}
+
+interface Block {
+    filled: boolean;
+}
+
+interface GridLine {
+    xiStart: number;
+    yiStart: number;
+    xiEnd: number;
+    yiEnd: number;
 }

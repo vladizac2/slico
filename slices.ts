@@ -148,7 +148,6 @@ class Slices {
                     this.addNewLine(this.lastPos, cp.p);
 
                     this.startSlicedShape(cp.p);
-                    this.shape.handleCutShape(this.lines, cp.line, this.startCutLine);
                 }
 
                 this.clearSlice();

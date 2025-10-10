@@ -18,6 +18,7 @@ class GameState {
     private shapeSpawnStartTime: number;
 
     private slices: Slices;
+    private grid: Grid;
 
     // Game objects
     private prevMousePos: Point;
@@ -29,8 +30,11 @@ class GameState {
         this.ctx = this.canvas.getContext('2d')!;
         initRenderer(this.ctx);
         initDebug();
-        this.shape = new Shape(this.canvas, this.ctx);
+
+        this.grid = new Grid(this.canvas, this.ctx);
+        this.shape = new Shape(this.canvas, this.ctx, this.grid);
         this.slices = new Slices(this.ctx, this.shape);
+
         this.score = 0;
         this.level = 1;
         this.gameRunning = false;
@@ -185,6 +189,7 @@ class GameState {
 
             this.shape.render();
             this.slices.render();
+            this.grid.render();
             renderDebugKeeps();
             drawCircle(this.mousePos, Color.RED);
         }
@@ -342,6 +347,8 @@ class GameState {
 
         // Redraw the canvas content
         this.clearCanvas();
+
+        this.shape.onCanvasChanged();
     }
 }
 
