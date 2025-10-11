@@ -38,7 +38,7 @@ class SlicedShape {
         this.endSlicePointShown = true;
 
         if (this.startSliceLine == null) {
-            this.scanner.getShape().addInnerLines(sliceLines);
+            this.scanner.getShape().addInnerLines(endSliceLine, sliceLines);
         } else {
             this.scanner.onSliceFinished(this.startSlicePoint, this.startSliceLine,
                 endSlicePoint, endSliceLine, sliceLines);

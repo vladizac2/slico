@@ -39,7 +39,6 @@ class Line {
     private end: Point;
     private m: number;
     private d: number;
-    private nextLine: Line | null;
     private neighborLines: Line[];
 
     constructor(start: Point, end: Point) {
@@ -49,7 +48,6 @@ class Line {
         this.start = calcSmlDiffPoint(this.start, this.end, -this.smlDiff);
         this.end = calcSmlDiffPoint(this.end, this.start, -this.smlDiff);
 
-        this.nextLine = null;
         this.neighborLines = [];
 
         this.m = 1;
@@ -58,16 +56,8 @@ class Line {
         this.d = calcDist(start, end);
     }
 
-    public setNextLine(line: Line) {
-        this.nextLine = line;
-    }
-
     public addNeighborLine(line: Line) {
         this.neighborLines.push(line);
-    }
-
-    public getNextLine(): Line | null {
-        return this.nextLine;
     }
 
     public getNeighborLines(): Line[] {

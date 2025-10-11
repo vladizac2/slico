@@ -23,9 +23,22 @@ class Shape {
         this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * 0.05;
     }
 
-    public addInnerLines(innerLines: Line[]) {
+    public addInnerLines(cutLine: Line, innerLines: Line[]) {
 
-        for (const line of innerLines) {
+        const startLine = innerLines[0];
+        startLine.addNeighborLine(cutLine);
+        cutLine.addNeighborLine(startLine);
+
+        for (let i = 0; i < innerLines.length; i++) {
+
+            const line = innerLines[i];
+
+            if (i < innerLines.length - 1) {
+                const next = innerLines[i + 1];
+                line.addNeighborLine(next);
+                next.addNeighborLine(line);
+            }
+
             this.innerLines.push(line);
         }
     }
@@ -196,6 +209,22 @@ class Shape {
             this.lines.push(line);
             this.grid.addLine(line);
         }
+
+        for (let i = 0; i < this.lines.length; i++) {
+
+            const line = this.lines[i];
+
+            if (i < this.lines.length - 1) {
+                const next = this.lines[i + 1];
+                line.addNeighborLine(next);
+                next.addNeighborLine(line);
+            }
+        }
+
+        const startLine = this.lines[0];
+        const lastLine = this.lines[this.lines.length - 1];
+        startLine.addNeighborLine(lastLine);
+        lastLine.addNeighborLine(startLine);
     }
 
 }
