@@ -83,23 +83,37 @@ class Shape {
             this.generateRandomShape();
         }
 
-        // // Draw the shape with single background color
-        // this.ctx.fillStyle = '#FF6B6B';
-        // this.ctx.beginPath();
+        // Draw the shape with single background color
+        this.ctx.fillStyle = '#FF6B6B';
+        // 1) Build your polygon path
+        this.ctx.beginPath();
+        if (this.lines.length > 0) {
+            this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
+            for (const line of this.lines) {
+                this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
+            }
+            this.ctx.closePath();
+        }
 
-        // if (this.lines.length > 0) {
-        //     this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
-        //     for (const line of this.lines) {
-        //         this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
-        //     }
-        //     this.ctx.closePath();
-        // }
-        // this.ctx.fill();
+        // // 2) Add a subpath for the hole (circle here, use any shape)
+        let holeX = 400, holeY = 250, holeR = 40;
+        this.ctx.moveTo(holeX + holeR, holeY);
+        this.ctx.arc(holeX, holeY, holeR, 0, Math.PI * 2);
 
-        // // Draw outline for better visibility
-        // this.ctx.strokeStyle = this.lineColor;
-        // this.ctx.lineWidth = this.lineWidth;
-        // this.ctx.stroke();
+        // second hole (shifted 100px to the right)
+        let hole2X = holeX + 100, hole2Y = holeY;
+        this.ctx.moveTo(hole2X + holeR, hole2Y);
+        this.ctx.arc(hole2X, hole2Y, holeR, 0, Math.PI * 2);
+
+        // fill all shapes at once using even-odd rule
+        this.ctx.fill('evenodd');
+
+        // (Optional) outline the outer polygon only:
+        this.ctx.strokeStyle = this.lineColor;
+        this.ctx.lineWidth = this.lineWidth;
+        this.ctx.stroke();
+
+
     }
 
     public inside(pos: Point): boolean {
