@@ -139,7 +139,6 @@ class Shape {
         this.ctx.lineWidth = this.lineWidth;
         this.ctx.stroke();
 
-        this.innerLines = this.lines;
         for (const line of this.innerLines) {
             drawLine(line, this.lineColor, this.lineWidth);
         }

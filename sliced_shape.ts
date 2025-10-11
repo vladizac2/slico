@@ -6,22 +6,25 @@ class SlicedShape {
     private sliceLines: Line[];
     private endSlicePointShown = false;
     private startSlicePoint: Point;
-    private startSliceLine: Line;
+    private startSliceLine: Line | null;
     private endSlicePoint: Point;
     private showTime = 0;
-    private startIsInside = false;
 
     private readonly SLICE_POINT_SHOW_TIME = 10;
 
     constructor(ctx: CanvasRenderingContext2D, scanner: Scanner, startSlicePoint: Point,
-        startSliceLine: Line, startIsInside: boolean) {
+        startSliceLine?: Line) {
         this.ctx = ctx;
         this.scanner = scanner;
-        this.startIsInside = startIsInside;
         this.lines = [];
         this.sliceLines = [];
         this.startSlicePoint = { ...startSlicePoint };
-        this.startSliceLine = startSliceLine;
+
+        if (startSliceLine == null) {
+            this.startSliceLine = null;
+        } else {
+            this.startSliceLine = startSliceLine;
+        }
         this.endSlicePoint = { x: 0, y: 0 };
     }
 
@@ -34,7 +37,7 @@ class SlicedShape {
         this.endSlicePoint = { ...endSlicePoint };
         this.endSlicePointShown = true;
 
-        if (this.startIsInside) {
+        if (this.startSliceLine == null) {
             this.scanner.getShape().addInnerLines(sliceLines);
         } else {
             this.scanner.onSliceFinished(this.startSlicePoint, this.startSliceLine,
@@ -48,6 +51,7 @@ class SlicedShape {
         this.lines = [];
         this.sliceLines = [];
         this.startSlicePoint = { ...startSlicePoint };
+        this.startSliceLine = null;
         this.endSlicePoint = { x: 0, y: 0 };
     }
 

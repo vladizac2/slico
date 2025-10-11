@@ -48,9 +48,9 @@ class Slices {
         }
     }
 
-    private addSlicedShape(startSlicePoint: Point, startSliceLine: Line, startIsInside: boolean) {
+    private addSlicedShape(startSlicePoint: Point, startSliceLine?: Line) {
         this.curSlicedShape = new SlicedShape(this.ctx, this.scanner,
-            startSlicePoint, startSliceLine, startIsInside);
+            startSlicePoint, startSliceLine);
         this.slicedShapes.push(this.curSlicedShape);
     }
 
@@ -109,7 +109,6 @@ class Slices {
         this.lastPos = minCollidePoint;
 
         this.setSlicedShape(this.lastPos);
-
     }
 
     public update(prevMousePos: Point, curMousePos: Point) {
@@ -141,7 +140,7 @@ class Slices {
                 this.lastPos = cp.p;
                 this.startCutLine = cp.line;
                 this.started = true;
-                this.addSlicedShape(cp.p, cp.line, false);
+                this.addSlicedShape(cp.p, cp.line);
             } else {
 
                 if (this.started) {
@@ -165,7 +164,7 @@ class Slices {
             this.started = true;
             this.lastPos = curLine.getEnd();
 
-            this.addSlicedShape(this.lastPos, curLine, true);
+            this.addSlicedShape(this.lastPos);
         } else if (!isIn && !curIn) {
             return;
         }
