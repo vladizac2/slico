@@ -97,15 +97,32 @@ class Shape {
 
         // // 2) Add a subpath for the hole (circle here, use any shape)
         let holeX = 400, holeY = 250, holeR = 40;
-        this.ctx.moveTo(holeX + holeR, holeY);
-        this.ctx.arc(holeX, holeY, holeR, 0, Math.PI * 2);
+        // this.ctx.moveTo(holeX + holeR, holeY);
+        // this.ctx.arc(holeX, holeY, holeR, 0, Math.PI * 2);
 
         // second hole (shifted 100px to the right)
         let hole2X = holeX + 100, hole2Y = holeY;
         this.ctx.moveTo(hole2X + holeR, hole2Y);
         this.ctx.arc(hole2X, hole2Y, holeR, 0, Math.PI * 2);
 
-        // fill all shapes at once using even-odd rule
+        // 2️⃣ Draw your custom hole shape using the lines
+        if (this.lines.length > 0) {
+            let i = 3;
+            this.ctx.moveTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
+
+            for (const line of this.lines) {
+                i--;
+                if (i <= 0) break;
+                this.ctx.lineTo(line.getEnd().x, line.getEnd().y);
+            }
+
+            this.ctx.lineTo(this.lines[0].getStart().x, this.lines[0].getStart().y);
+
+            // Close the inner hole path
+            this.ctx.closePath();
+        }
+
+        // 3️⃣ Fill using the even-odd rule to cut the hole
         this.ctx.fill('evenodd');
 
         // (Optional) outline the outer polygon only:
@@ -113,6 +130,10 @@ class Shape {
         this.ctx.lineWidth = this.lineWidth;
         this.ctx.stroke();
 
+
+    }
+
+    public addInnerLines() {
 
     }
 
