@@ -17,6 +17,7 @@ class GameState {
     private shapeSpawnDelay: number;
     private shapeSpawnStartTime: number;
 
+    private scanner: Scanner;
     private slices: Slices;
     private grid: Grid;
 
@@ -33,7 +34,8 @@ class GameState {
 
         this.grid = new Grid(this.canvas, this.ctx);
         this.shape = new Shape(this.canvas, this.ctx, this.grid);
-        this.slices = new Slices(this.ctx, this.shape);
+        this.scanner = new Scanner(this.shape);
+        this.slices = new Slices(this.ctx, this.shape, this.scanner);
 
         this.score = 0;
         this.level = 1;

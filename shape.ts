@@ -3,6 +3,7 @@ class Shape {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
     private lines: Line[];
+    private innerLines: Line[];
     private minPointsDist: number;
     private baseRadius: number;
     private grid: Grid;
@@ -16,9 +17,17 @@ class Shape {
         this.grid = grid;
         this.baseRadius = 1;
         this.lines = [];
+        this.innerLines = [];
 
         this.baseRadius = 1;
         this.minPointsDist = Math.min(this.canvas.width, this.canvas.height) * 0.05;
+    }
+
+    public addInnerLines(innerLines: Line[]) {
+
+        for (const line of innerLines) {
+            this.innerLines.push(line);
+        }
     }
 
     public onCanvasChanged() {
@@ -130,10 +139,10 @@ class Shape {
         this.ctx.lineWidth = this.lineWidth;
         this.ctx.stroke();
 
-
-    }
-
-    public addInnerLines() {
+        this.innerLines = this.lines;
+        for (const line of this.innerLines) {
+            drawLine(line, this.lineColor, this.lineWidth);
+        }
 
     }
 

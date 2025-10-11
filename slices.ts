@@ -3,6 +3,7 @@
 class Slices {
     private ctx: CanvasRenderingContext2D;
     private shape: Shape;
+    private scanner: Scanner;
     private lines: Line[];
     private started: boolean;
 
@@ -14,10 +15,10 @@ class Slices {
     private slicedShapes: SlicedShape[];
     private readonly NEW_SLICE_TIME = 2;
 
-
-    constructor(ctx: CanvasRenderingContext2D, shape: Shape) {
+    constructor(ctx: CanvasRenderingContext2D, shape: Shape, scanner: Scanner) {
         this.ctx = ctx;
         this.shape = shape;
+        this.scanner = scanner;
         this.lines = [];
         this.started = false;
         this.lastPos = { x: 0, y: 0 };
@@ -47,16 +48,17 @@ class Slices {
         }
     }
 
-    private addSlicedShape(startSlicePoint: Point) {
-        this.curSlicedShape = new SlicedShape(this.ctx, startSlicePoint);
+    private addSlicedShape(startSlicePoint: Point, startSliceLine: Line, startIsInside: boolean) {
+        this.curSlicedShape = new SlicedShape(this.ctx, this.scanner,
+            startSlicePoint, startSliceLine, startIsInside);
         this.slicedShapes.push(this.curSlicedShape);
     }
 
-    private startSlicedShape(endSlicePoint: Point) {
+    private startSlicedShape(endSlicePoint: Point, endSliceLine: Line) {
         if (this.curSlicedShape == null) {
             console.error("Cur slice shape is null in end");
         } else {
-            this.curSlicedShape.start(endSlicePoint, this.lines);
+            this.curSlicedShape.start(endSlicePoint, endSliceLine, this.lines);
             this.curSlicedShape = null;
         }
     }
@@ -139,7 +141,7 @@ class Slices {
                 this.lastPos = cp.p;
                 this.startCutLine = cp.line;
                 this.started = true;
-                this.addSlicedShape(this.lastPos);
+                this.addSlicedShape(cp.p, cp.line, false);
             } else {
 
                 if (this.started) {
@@ -147,7 +149,7 @@ class Slices {
                     this.started = false;
                     this.addNewLine(this.lastPos, cp.p);
 
-                    this.startSlicedShape(cp.p);
+                    this.startSlicedShape(cp.p, cp.line);
                 }
 
                 this.clearSlice();
@@ -163,7 +165,7 @@ class Slices {
             this.started = true;
             this.lastPos = curLine.getEnd();
 
-            this.addSlicedShape(this.lastPos);
+            this.addSlicedShape(this.lastPos, curLine, true);
         } else if (!isIn && !curIn) {
             return;
         }
